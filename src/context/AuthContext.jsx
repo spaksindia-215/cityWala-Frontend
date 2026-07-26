@@ -277,6 +277,7 @@ export function AuthProvider({ children }) {
       email: data.partner.email,
       mobile: data.partner.mobile,
       status: data.partner.status,
+      isVerified: data.partner.isVerified,
       role: "partner",
     };
 
@@ -288,6 +289,7 @@ export function AuthProvider({ children }) {
       name: data.user?.name,
       email: data.user?.email,
       mobile: data.user?.mobile,
+      isVerified: data.user?.isVerified,
     };
 
     setPartner(null);
@@ -320,11 +322,16 @@ export function AuthProvider({ children }) {
 
 
 
+  // Registration no longer auto-logs-in: the account is created unverified
+  // and the caller should route to the verification-pending page using
+  // data.email from the response.
   const register = async (form) => {
     const { data } = await API.post('/auth/register', form)
-    if (!data?.token) throw new Error('Token missing from register response')
-    setAccessToken(data.token)
-    setUser(data.user)
+    return data
+  }
+
+  const resendVerification = async (email) => {
+    const { data } = await API.post('/auth/resend-verification', { email })
     return data
   }
 
@@ -343,6 +350,7 @@ export function AuthProvider({ children }) {
       email: data.partner.email,
       mobile: data.partner.mobile,
       status: data.partner.status,
+      isVerified: data.partner.isVerified,
       role: 'partner'
     }
     setPartner(partnerData)
@@ -350,22 +358,13 @@ export function AuthProvider({ children }) {
     return data
   }
 
+  // Registration no longer auto-logs-in (see `register` above).
   const partnerRegister = async (form) => {
     const isFormData = typeof FormData !== 'undefined' && form instanceof FormData
     const { data } = await API.post('/auth/partner/register', form, isFormData
       ? { headers: { 'Content-Type': 'multipart/form-data' } }
       : undefined
     )
-    if (!data?.token) throw new Error('Token missing from partner register response')
-    setAccessToken(data.token)
-    const partnerDataToStore = {
-      id: data.partner._id || data.partner.id,
-      name: data.partner.name,
-      email: data.partner.email,
-      mobile: data.partner.mobile,
-      role: 'partner'
-    }
-    setPartner(data.partner)
     return data
   }
 
@@ -421,7 +420,7 @@ export function AuthProvider({ children }) {
   // }, [user, partner])
 
   return (
-    <AuthContext.Provider value={{ user, partner, admin, loading, login, partnerLogin, adminLogin, forgotPassword, register, partnerRegister, logout, updatePartnerData }}>
+    <AuthContext.Provider value={{ user, partner, admin, loading, login, partnerLogin, adminLogin, forgotPassword, register, partnerRegister, resendVerification, logout, updatePartnerData }}>
       {children}
     </AuthContext.Provider>
   )

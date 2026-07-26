@@ -6,6 +6,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import API from "../api/axios";
+import AuthCard from "../components/ui/AuthCard";
 
 export function ResetPassword() {
   const { t } = useTranslation();
@@ -16,9 +17,9 @@ export function ResetPassword() {
   const resetToken = location.state?.resetToken;
 
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] =
-    useState("");
-  const [message, setMessage] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const isOtpFlow = !token && !!resetToken;
@@ -27,111 +28,76 @@ export function ResetPassword() {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      return setMessage("Passwords do not match");
+      return setError(t("auth.passwords_no_match"));
     }
 
     setLoading(true);
-    setMessage("");
+    setError("");
 
     try {
       if (token) {
         // Email reset link flow
-        await API.post(
-          `/auth/reset-password/${token}`,
-          { password }
-        );
+        await API.post(`/auth/reset-password/${token}`, { password });
       } else if (isOtpFlow) {
         // Phone OTP flow
-        await API.post(
-          `/auth/reset-password-otp`,
-          {
-            resetToken,
-            password,
-          }
-        );
+        await API.post(`/auth/reset-password-otp`, { resetToken, password });
       } else {
         throw new Error("Invalid reset request");
       }
 
-      setMessage(
-        "Password updated successfully"
-      );
+      setSuccess(true);
 
       setTimeout(() => {
         navigate("/login");
       }, 1500);
 
     } catch (err) {
-      setMessage(
-        err.response?.data?.message ||
-        err.message ||
-        "Reset failed"
-      );
+      setError(err.response?.data?.message || err.message || t("auth.reset_failed"));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="auth-wrapper">
-      <div className="container">
-        <div className="row justify-content-center">
-          <div className="col-12 col-md-5">
-            <div className="card p-4 text-center shadow border-0">
+    <AuthCard
+      eyebrow={t('home.trusted_label')}
+      title={t("auth.reset_password")}
+      subtitle={token ? t("auth.reset_using_email") : t("auth.reset_using_phone")}
+    >
+      <h2 className="mb-4 text-center">{t("auth.reset_password")}</h2>
 
-              <h4 className="fw-bold mb-2">{t("auth.reset_password")}</h4>
+      {error && <div className="alert alert-danger py-2">{error}</div>}
+      {success && <div className="alert alert-success py-2">{t("auth.reset_success")}</div>}
 
-              <p className="text-muted mb-3">
-                {token
-                  ? t("auth.reset_using_email")
-                  : t("auth.reset_using_phone")}
-              </p>
-
-              {message && (
-                <div className="alert alert-info">
-                 {message}
-                </div>
-              )}
-
-              <form onSubmit={handleSubmit}>
-                <input
-                  type="password"
-                  className="form-control mb-3"
-                  placeholder={t("auth.new_password")}
-                  value={password}
-                  onChange={(e) =>
-                    setPassword(e.target.value)
-                  }
-                  required
-                />
-
-                <input
-                  type="password"
-                  className="form-control mb-3"
-                  placeholder={t("auth.confirm_password")}
-                  value={confirmPassword}
-                  onChange={(e) =>
-                    setConfirmPassword(
-                      e.target.value
-                    )
-                  }
-                  required
-                />
-
-                <button
-                  className="btn btn-primary w-100"
-                  disabled={loading}
-                >
-                  {loading
-                    ? t("auth.updating")
-                    : t("auth.update_password")}
-                </button>
-              </form>
-
-            </div>
-          </div>
+      <form onSubmit={handleSubmit}>
+        <div className="form-floating mb-3">
+          <input
+            type="password"
+            className="form-control"
+            placeholder={t("auth.new_password")}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <label>{t("auth.new_password")}</label>
         </div>
-      </div>
-    </div>
+
+        <div className="form-floating mb-4">
+          <input
+            type="password"
+            className="form-control"
+            placeholder={t("auth.confirm_password")}
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+          />
+          <label>{t("auth.confirm_password")}</label>
+        </div>
+
+        <button className="nav-btn primary w-100" style={{ height: 48 }} disabled={loading}>
+          {loading ? t("auth.updating") : t("auth.update_password")}
+        </button>
+      </form>
+    </AuthCard>
   );
 }

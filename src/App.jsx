@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import SessionTimeoutProvider from './context/SessionTimeoutProvider'
+import { ToastProvider } from './context/ToastContext'
 import { useState, useEffect } from 'react'
 // import Header from './components/Header'
 // import Footer from './components/Footer'
@@ -35,6 +36,8 @@ import Analytics from './pages/admin/Analytics'
 
 import { ResetPassword } from './pages/ResetPassword'
 import VerifyOtp from './components/VerifyOtp'
+import VerifyEmail from './pages/VerifyEmail'
+import VerificationPending from './pages/VerificationPending'
 // import AdminSubcategories from './pages/admin/AdminSubcategories'
 // import { AdminSubcategories } from './pages/admin/AdminSubcategories'
 
@@ -82,6 +85,10 @@ const ProtectedUser = ({ children }) => {
     return <Navigate to="/login" replace />;
   }
 
+  if (user.isVerified === false) {
+    return <Navigate to="/verify-email-pending" state={{ email: user.email }} replace />;
+  }
+
   return children;
 };
 
@@ -100,6 +107,10 @@ const ProtectedPartner = ({ children }) => {
 
   if (!partner) {
     return <Navigate to="/login" replace />;
+  }
+
+  if (partner.isVerified === false) {
+    return <Navigate to="/verify-email-pending" state={{ email: partner.email }} replace />;
   }
 
   return children;
@@ -159,6 +170,8 @@ const AdminRoot = () => (
           <Route path="/reset-password/:token" element={<NoIndex><ResetPassword /></NoIndex>} />
           <Route path="/reset-password" element={<NoIndex><ResetPassword /></NoIndex>} />
           <Route path='/verify-otp' element={<NoIndex><VerifyOtp /></NoIndex>} />
+          <Route path='/verify-email' element={<NoIndex><VerifyEmail /></NoIndex>} />
+          <Route path='/verify-email-pending' element={<NoIndex><VerificationPending /></NoIndex>} />
           <Route path="/plan" element={<NoIndex><ProtectedPartner><Plan /></ProtectedPartner></NoIndex>} />
           {/* <Route path="/categories/:slug" element={<AllCategories />} /> */}
           <Route path="/partner/details/:id" element={<PartnerDetails />} />
@@ -227,14 +240,13 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <SessionTimeoutProvider>
-          <AppContent />
+          <ToastProvider>
+            <AppContent />
+          </ToastProvider>
         </SessionTimeoutProvider>
       </AuthProvider>
     </BrowserRouter>
   )
 }
-
-
-// jaise transport mai VEHICE SHOW ROOMS & SERVICE CENTERS isme fir car and motor select kr lia  categories ko fir inme is cat wise jsine kia hai data store uski list dikhni hai partners ki ek page pai vo kaise hoga 
 
 {/* <Route path="/categories/:parentSlug/:slug?" element={<AllCategories />} /> y shi is trh s hi hoga pr iske bd sub cat chosse krke usko us sub cat p clik krke us sub cat mai register logo ka dta dikhega aisa krna hain or us list mai s ksisi bhi user p clik p uska deayti page y pura flow hai  */ }

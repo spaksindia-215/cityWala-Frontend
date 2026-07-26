@@ -1,2 +1,2 @@
-import { Register as RegisterComp, ForgotPassword as ForgotComp } from './Login'
+import { Register as RegisterComp } from './Login'
 export { RegisterComp as default }

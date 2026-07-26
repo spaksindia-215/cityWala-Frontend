@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 
 // Utility functions
 const validatePasswordRequirements = (password, email, firstName = '', lastName = '') => {
@@ -51,12 +51,33 @@ const getStrengthLabel = (strength) => {
   return 'Strong';
 };
 
-const getStrengthColor = (strength) => {
-  if (strength <= 1) return '#dc3545';
-  if (strength === 2) return '#fd7e14';
-  if (strength === 3) return '#20c997';
-  return '#198754';
+const getStrengthVariant = (strength) => {
+  if (strength <= 1) return 'weak';
+  if (strength === 2) return 'fair';
+  if (strength === 3) return 'good';
+  return 'strong';
 };
+
+function RequirementItem({ met, label }) {
+  return (
+    <div className="d-flex align-items-center gap-2 mb-2">
+      <i
+        className={`fa-solid ${met ? 'fa-circle-check' : 'fa-circle-xmark'}`}
+        style={{ fontSize: 14, color: met ? 'var(--cw-success)' : 'var(--cw-gray-300)' }}
+        aria-hidden="true"
+      ></i>
+      <span
+        style={{
+          fontSize: 13,
+          color: met ? 'var(--cw-success)' : 'var(--cw-gray-500)',
+          textDecoration: met ? 'line-through' : 'none',
+        }}
+      >
+        {label}
+      </span>
+    </div>
+  );
+}
 
 export default function PasswordStrengthMeter({
   password = '',
@@ -65,7 +86,6 @@ export default function PasswordStrengthMeter({
   lastName = '',
   showMeter = true,
   showRequirements = true,
-  onChange = () => { }
 }) {
   const requirements = useMemo(
     () => validatePasswordRequirements(password, email, firstName, lastName),
@@ -74,68 +94,34 @@ export default function PasswordStrengthMeter({
 
   const strength = useMemo(() => calculateStrength(password), [password]);
   const strengthLabel = getStrengthLabel(strength);
-  const strengthColor = getStrengthColor(strength);
+  const strengthVariant = getStrengthVariant(strength);
 
   const allRequirementsMet = Object.values(requirements).every(v => v);
 
-  const RequirementItem = ({ met, label }) => (
-    <div className="d-flex align-items-center gap-2 mb-2">
-      <span
-        style={{
-          color: met ? '#198754' : '#6c757d',
-          fontSize: '18px',
-          lineHeight: '1',
-        }}
-      >
-        {met ? '✓' : '✗'}
-      </span>
-      <span
-        style={{
-          fontSize: '13px',
-          color: met ? '#198754' : '#6c757d',
-          textDecoration: met ? 'line-through' : 'none',
-        }}
-      >
-        {label}
-      </span>
-    </div>
-  );
-
   return (
     <div className="password-strength-meter">
-      {/* Password Strength Meter */}
       {showMeter && password && (
         <div className="mb-3">
-          <div className="d-flex justify-content-between align-items-center mb-2">
-            <small className="text-muted">Password Strength</small>
-            <small style={{ color: strengthColor, fontWeight: 'bold' }}>
+          <div className="d-flex justify-content-between align-items-center mb-1">
+            <small className="text-body-secondary">Password Strength</small>
+            <small className="fw-bold" style={{ color: `var(--cw-${strengthVariant === 'weak' ? 'danger' : strengthVariant === 'fair' ? 'warning' : strengthVariant === 'good' ? 'success' : 'blue-600'})` }}>
               {strengthLabel}
             </small>
           </div>
-          <div
-            style={{
-              height: '6px',
-              backgroundColor: '#e9ecef',
-              borderRadius: '3px',
-              overflow: 'hidden',
-            }}
-          >
-            <div
-              style={{
-                height: '100%',
-                width: `${(strength / 4) * 100}%`,
-                backgroundColor: strengthColor,
-                transition: 'width 0.3s ease',
-              }}
-            />
+          <div className="cw-pw-meter">
+            {[0, 1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className={`cw-pw-meter__seg${i < strength ? ` is-filled--${strengthVariant}` : ''}`}
+              />
+            ))}
           </div>
         </div>
       )}
 
-      {/* Requirements Checklist */}
       {showRequirements && (
-        <div className="password-requirements" style={{ marginTop: '15px' }}>
-          <small className="d-block mb-3" style={{ fontWeight: 'bold', color: '#495057' }}>
+        <div className="password-requirements mt-3">
+          <small className="d-block mb-2 fw-bold text-body-secondary">
             Password must contain:
           </small>
 
@@ -149,16 +135,19 @@ export default function PasswordStrengthMeter({
           <RequirementItem met={requirements.notEmail} label="Cannot contain your email" />
           <RequirementItem met={requirements.notName} label="Cannot contain your name" />
 
-          {/* Status indicator */}
           {password && (
-            <div className="mt-3 p-2 rounded" style={{
-              backgroundColor: allRequirementsMet ? '#d1e7dd' : '#f8d7da',
-              borderLeft: `3px solid ${allRequirementsMet ? '#198754' : '#dc3545'}`,
-            }}>
-              <small style={{ color: allRequirementsMet ? '#155724' : '#721c24' }}>
+            <div
+              className="mt-3 p-2 rounded-3"
+              style={{
+                background: allRequirementsMet ? 'var(--cw-success-50)' : 'var(--cw-danger-50)',
+                borderLeft: `3px solid var(--cw-${allRequirementsMet ? 'success' : 'danger'})`,
+              }}
+            >
+              <small style={{ color: allRequirementsMet ? 'var(--cw-success)' : 'var(--cw-danger)' }}>
+                <i className={`fa-solid ${allRequirementsMet ? 'fa-circle-check' : 'fa-circle-xmark'} me-1`} aria-hidden="true"></i>
                 {allRequirementsMet
-                  ? '✓ Password is strong and meets all requirements'
-                  : '✗ Password does not meet all requirements'}
+                  ? 'Password is strong and meets all requirements'
+                  : 'Password does not meet all requirements'}
               </small>
             </div>
           )}

@@ -1,40 +1,28 @@
 import AdminSidebar from "./AdminSidebar";
 
-export default function AdminLayout({
-  children,
-  active
-}) {
+export default function AdminLayout({ children }) {
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "#f5f5f5"
-      }}
-    >
-      <div className="row g-0">
+    <>
+      {/* Mobile Topbar */}
+      <div className="d-md-none cw-dashboard-topbar">
+        <span style={{ fontWeight: 600 }}>Admin Panel</span>
+        <button
+          className="btn btn-outline-light btn-sm"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#mobileSidebar"
+          aria-label="Open menu"
+        >
+          <i className="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+      </div>
 
-        {/* Mobile Topbar */}
-        <div className="d-md-none p-2 bg-dark">
-          <button
-            className="btn btn-light"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#mobileSidebar"
-          >
-            <i className="fa-solid fa-bars"></i>
-          </button>
-        </div>
+      <div className="cw-dashboard-layout">
+        <AdminSidebar />
 
-        {/* Sidebar */}
-        <AdminSidebar active={active} />
-
-        {/* Main Content */}
-        <div className="col-lg-10 col-md-9 p-4" style={{
-          overflowY: "auto"
-        }}  >
+        <div className="cw-dashboard-content">
           {children}
         </div>
-
       </div>
-    </div>
+    </>
   );
 }

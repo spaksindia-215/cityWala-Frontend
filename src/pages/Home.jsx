@@ -8,6 +8,8 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useTranslation } from "react-i18next";
 import Logo from '../assets/headerLogo.png'
+import AvatarPlaceholder from '../assets/avatar-placeholder.svg'
+import ServicePlaceholder from '../assets/service-placeholder.svg'
 import Seo from '../seo/Seo'
 import { webPageSchema, graph } from '../seo/schema'
 import { DEFAULT_TITLE, DEFAULT_DESCRIPTION } from '../seo/config'
@@ -194,24 +196,13 @@ export default function Home() {
   }
 
 
-  // handlesearch
   const handleSearch = (e) => {
     e.preventDefault();
 
-    console.log("🔍 SEARCH CLICKED - Step 1: Search button fired");
-    console.log("Current search object:", search);
-
     if (!user && !partner) {
-      console.log("❌ Not logged in, redirecting to login");
       navigate("/login");
       return;
     }
-
-    console.log("✓ Step 2: User is logged in");
-    console.log("  - search.country:", search.country);
-    console.log("  - search.state:", search.state);
-    console.log("  - search.city:", search.city);
-    console.log("  - search.category:", search.category);
 
     const params = new URLSearchParams();
 
@@ -219,9 +210,6 @@ export default function Home() {
     if (search.state) params.append("state", search.state);
     if (search.city) params.append("city", search.city);
 
-    console.log("✓ Step 3: Query string created:", params.toString());
-
-    // selected category find karo
     const selectedCategory = (
       popularCategories.length > 0
         ? popularCategories
@@ -230,20 +218,10 @@ export default function Home() {
       (c) => (c._id || c.id) === search.category
     );
 
-    console.log("✓ Step 4: Category lookup results:");
-    console.log("  - selectedCategory:", selectedCategory);
-    console.log("  - selectedCategory?.slug:", selectedCategory?.slug);
-    console.log("  - selectedCategory?.status:", selectedCategory?.status);
-
     if (selectedCategory?.slug) {
-      const navigateUrl = `/categories/${selectedCategory.slug}?${params.toString()}`;
-      console.log("✓ Step 5: Navigating to:", navigateUrl);
-      navigate(navigateUrl);
-
+      navigate(`/categories/${selectedCategory.slug}?${params.toString()}`);
     } else {
-      const navigateUrl = `/listing?${params.toString()}`;
-      console.log("⚠️ Step 5: No category slug found, navigating to:", navigateUrl);
-      navigate(navigateUrl);
+      navigate(`/listing?${params.toString()}`);
     }
   };
   // add handleSearch
@@ -303,118 +281,70 @@ export default function Home() {
         jsonLd={graph(webPageSchema({ path: "/", name: DEFAULT_TITLE, description: DEFAULT_DESCRIPTION }))}
       />
 
-      <section
-        id="hero-section"
-        className="banner-section position-relative overflow-hidden"
-        style={{
-          background: "linear-gradient(135deg,#1075be 0%,#f46f26 45%,#29528c 100%)",
-          padding: "90px 0 80px",
-        }}
-      >
-        {/* Background Shapes */}
-        <div
-          style={{
-            position: "absolute",
-            top: "-80px",
-            left: "-80px",
-            width: "220px",
-            height: "220px",
-            borderRadius: "50%",
-            background: "rgba(255,255,255,0.08)",
-          }}
-        ></div>
+      <section id="hero-section" className="cw-hero-photo">
+        <div className="cw-hero-photo__bg" aria-hidden="true" />
+        <div className="cw-hero-photo__wash" aria-hidden="true" />
 
-        <div
-          style={{
-            position: "absolute",
-            bottom: "-100px",
-            right: "-60px",
-            width: "280px",
-            height: "280px",
-            borderRadius: "50%",
-            background: "rgba(255,255,255,0.06)",
-          }}
-        ></div>
+        <div className="cw-hero-photo__content container">
+          <div className="row">
+            <div className="col-xl-8 col-lg-9">
 
-        <div className="container position-relative">
-          <div className="row justify-content-center">
-            <div className="col-lg-10 text-center">
-
-              <span
-                className="d-inline-block px-4 py-2 mb-3 rounded-pill"
-                style={{
-                  background: "rgba(255,255,255,0.15)",
-                  color: "#fff",
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  backdropFilter: "blur(8px)",
-                }}
-              >
+              <span className="d-inline-block px-3 py-2 mb-3 rounded-pill cw-overline"
+                style={{ background: 'var(--cw-blue-50)', color: 'var(--cw-blue-600)', letterSpacing: '.06em' }}>
                 {t('home.trusted_label')}
               </span>
 
-              <h1
-                className="text-white fw-bold mb-3"
-                style={{
-                  fontSize: "clamp(2rem,5vw,4rem)",
-                  lineHeight: "1.2",
-                }}
-              >
-                {t('home.hero_title')} <br />
-                {t('home.hero_title2')}
+              <h1 className="cw-display cw-display--hero mb-3">
+                {t('home.hero_title')}<br />
+                {(() => {
+                  const title2 = t('home.hero_title2');
+                  const ampIdx = title2.indexOf('&');
+                  if (ampIdx === -1) return title2;
+                  return (
+                    <>
+                      {title2.slice(0, ampIdx)}
+                      <span style={{ color: 'var(--cw-orange-500)' }}>{title2.slice(ampIdx)}</span>
+                    </>
+                  );
+                })()}
               </h1>
 
-              <p
-                className="text-white mx-auto mb-5"
-                style={{
-                  maxWidth: "700px",
-                  opacity: "0.9",
-                  fontSize: "18px",
-                }}
-              >
+              <p className="mb-5" style={{ maxWidth: 560, fontSize: 16, lineHeight: 1.6, color: 'var(--cw-gray-700)' }}>
                 {t('home.hero_subtitle')}
               </p>
             </div>
           </div>
 
-          {/* Search Box */}
-          <div className="row justify-content-center">
+          {/* Search Card */}
+          <div className="row">
             <div className="col-xl-11">
-              <div
-                className="p-4 p-lg-5 rounded-4 shadow-lg"
-                style={{
-                  background: "rgba(255,255,255,0.12)",
-                  backdropFilter: "blur(18px)",
-                  border: "1px solid rgba(255,255,255,0.18)",
-                }}
-              >
+              <div className="cw-hero-search-card">
                 <form onSubmit={handleSearch}>
-                  <div className="row g-3 align-items-center">
+                  <div className="row g-3 align-items-end">
 
                     <div className="col-lg-3 col-md-6">
-
-                      {/* countries */}
-                      <div className="col-lg-12">
-                        <SearchableSelect
-                          options={[
-                            ...countries.filter((c) => c.name === "India"),
-                            ...countries.filter((c) => c.name !== "India"),
-                          ]}
-
-                          value={search.country}
-                          onChange={handleCountryChange}
-                          placeholder={t('home.select_country')}
-                          valueKey="iso2"
-                          labelKey="name"
-                          className="form-select border-0 shadow-sm py-3"
-                        />
-                      </div>
-
-
+                      <label className="form-label small fw-semibold text-body-secondary mb-1">
+                        <i className="fa-solid fa-globe me-1" style={{ color: 'var(--cw-blue-600)' }} aria-hidden="true"></i>
+                        {t('home.select_country')}
+                      </label>
+                      <SearchableSelect
+                        options={[
+                          ...countries.filter((c) => c.name === "India"),
+                          ...countries.filter((c) => c.name !== "India"),
+                        ]}
+                        value={search.country}
+                        onChange={handleCountryChange}
+                        placeholder={t('home.select_country')}
+                        valueKey="iso2"
+                        labelKey="name"
+                      />
                     </div>
 
                     <div className="col-lg-3 col-md-6">
-
+                      <label className="form-label small fw-semibold text-body-secondary mb-1">
+                        <i className="fa-solid fa-location-dot me-1" style={{ color: 'var(--cw-blue-600)' }} aria-hidden="true"></i>
+                        {t('home.search_state')}
+                      </label>
                       <SearchableSelect
                         options={states}
                         placeholder={t('home.search_state')}
@@ -423,11 +353,13 @@ export default function Home() {
                         valueKey='_id'
                         labelKey='name'
                       />
-
                     </div>
 
                     <div className="col-lg-3 col-md-6">
-
+                      <label className="form-label small fw-semibold text-body-secondary mb-1">
+                        <i className="fa-solid fa-building me-1" style={{ color: 'var(--cw-blue-600)' }} aria-hidden="true"></i>
+                        {t('home.search_city')}
+                      </label>
                       <SearchableSelect
                         options={cities}
                         value={search.city}
@@ -439,7 +371,10 @@ export default function Home() {
                     </div>
 
                     <div className="col-lg-2 col-md-6">
-
+                      <label className="form-label small fw-semibold text-body-secondary mb-1">
+                        <i className="fa-solid fa-grip me-1" style={{ color: 'var(--cw-blue-600)' }} aria-hidden="true"></i>
+                        {t('home.category')}
+                      </label>
                       <SearchableSelect
                         options={popularCategories.length > 0 ? popularCategories : translatedFallbackCats}
                         value={search.category}
@@ -448,20 +383,12 @@ export default function Home() {
                         labelKey='name'
                         onChange={(e) => setSearch((p) => ({ ...p, category: e }))}
                       />
-
                     </div>
 
                     <div className="col-lg-1 col-md-12">
-                      <button
-                        type="submit"
-                        className="btn w-100 p-2 fw-semibold"
-                        style={{
-                          background: "#ffb703",
-                          color: "#000",
-                          borderRadius: "12px",
-                        }}
-                      >
-                        <i className="fa-solid fa-search"></i>
+                      <button type="submit" className="nav-btn primary w-100" style={{ height: 48 }}>
+                        <i className="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                        <span className="d-lg-none">{t('search')}</span>
                       </button>
                     </div>
 
@@ -470,21 +397,28 @@ export default function Home() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
 
-          {/* Bottom Stats */}
-          <div className="row mt-4 g-3 text-center">
+      {/* ===== STATS BAND ===== */}
+      <section className="cw-stats-band">
+        <div className="container">
+          <div className="row g-4 text-center text-md-start">
             {[
-              { number: "10K+", text: t('home.businesses') },
-              { number: "50+", text: t('home.cities') },
-              { number: "24/7", text: t('home.support') },
+              { icon: 'fa-store', tint: 'blue', number: '10K+', text: t('home.businesses') },
+              { icon: 'fa-user-group', tint: 'orange', number: '50+', text: t('home.cities') },
+              { icon: 'fa-shield-halved', tint: 'success', number: '24/7', text: t('home.support') },
+              { icon: 'fa-shield', tint: 'violet', number: '100%', text: t('home.verified') },
             ].map((item, index) => (
-              <div className="col-md-4" key={index}>
-                <div
-                  className="py-3 px-3 rounded-3 h-100"
-
-                >
-                  <h3 className="fw-bold text-white mb-1">{item.number}</h3>
-                  <p className="mb-0 text-white-50 small">{item.text}</p>
+              <div className="col-6 col-md-3" key={index}>
+                <div className="cw-stat-tile">
+                  <span className={`cw-stat-tile__icon cw-stat-tile__icon--${item.tint}`}>
+                    <i className={`fa-solid ${item.icon}`} aria-hidden="true"></i>
+                  </span>
+                  <div>
+                    <div className="cw-stat-tile__value">{item.number}</div>
+                    <div className="cw-stat-tile__label">{item.text}</div>
+                  </div>
                 </div>
               </div>
             ))}
@@ -492,70 +426,20 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ===== BANNER CAROUSEL ===== */}
-      {/* {banners.length > 0 && (
-        <section className="py-3">
-          <div className="container">
-            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden' }}>
-              <img
-                src={`/${banners[bannerIdx]?.image}`}
-                alt={banners[bannerIdx]?.title}
-                style={{ width: '100%', height: 300, objectFit: 'cover', transition: 'all 0.5s' }}
-                onError={e => e.target.style.display = 'none'}
-              />
-              <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'linear-gradient(transparent,rgba(0,0,0,0.5))', padding: 20 }}>
-                <h3 className="text-white">{banners[bannerIdx]?.title}</h3>
-              </div>
-              <button onClick={() => setBannerIdx(p => (p - 1 + banners.length) % banners.length)}
-                style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.5)', border: 'none', color: '#fff', borderRadius: '50%', width: 35, height: 35 }}>‹</button>
-              <button onClick={() => setBannerIdx(p => (p + 1) % banners.length)}
-                style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.5)', border: 'none', color: '#fff', borderRadius: '50%', width: 35, height: 35 }}>›</button>
-            </div>
-          </div>
-        </section>
-      )} */}
-
-      {/* ===== POPULAR CATEGORIES ===== */}
-      {/* <section className="py-5">
-        <div className="container">
-          <div className="d-flex justify-content-between align-items-center mb-4">
-            <div>
-              <h2 className="section-title mb-1">Popular Category</h2>
-              <p className="section-subtitle">Find Global Experts & Services Anyone, Anywhere, Anytime.</p>
-            </div>
-            <Link to="/categories" className="btn btn-outline-primary btn-sm">View All</Link>
-          </div>
-          <div className="row g-3">
-            {(popularCategories.length > 0 ? popularCategories : translatedFallbackCats).map(cat => (
-              <div key={cat._id || cat.id || cat.name} className="col-lg-2 col-md-3 col-4">
-                <Link to={cat.link || '#'} className="category-card">
-                  <img src={cat.img || cat.image || cat.svg_path || 'https://via.placeholder.com/60'} alt={cat.name} onError={e => e.target.src = 'https://via.placeholder.com/60'} />
-                  <h6>{cat.name}</h6>
-                </Link>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section> */}
-
-      <section className="py-5 category-section">
+      <section className="cw-section category-section">
         <div className="container">
 
-          {/* Heading */}
+          {/* Section header */}
           <div className="d-flex flex-wrap justify-content-between align-items-center mb-5 gap-3">
             <div>
-              <span className="small text-uppercase fw-semibold text-primary letter-space">
+              <span className="cw-overline d-block mb-2">
                 {t('home.explore')}
               </span>
-              <h2 className="section-title fw-bold mb-2">{t('home.popular_categories')}</h2>
-              <p className="section-subtitle mb-0 text-muted">
+              <h2 className="cw-display cw-display--section mb-2">{t('home.popular_categories')}</h2>
+              <p className="section-subtitle mb-0">
                 {t('home.popular_subtitle')}
               </p>
             </div>
-
-            {/* <Link to="/categories" className="btn btn-viewall px-4 py-2">
-              View All
-            </Link> */}
           </div>
 
           {/* Categories */}
@@ -565,24 +449,26 @@ export default function Home() {
                 key={cat._id || cat.id || cat.name}
                 className="col-xl-2 col-lg-3 col-md-4 col-6"
               >
-                {/* <Link to={cat.slug || '#'} className="category-card-v2 text-decoration-none"> */}
-                <div onClick={() => handleCategory(cat)} className="category-card-v2 text-decoration-none cursor-pointer ">
+                <button
+                  type="button"
+                  onClick={() => handleCategory(cat)}
+                  className="category-card-v2 text-decoration-none w-100 border-0 cw-lift"
+                >
                   <div className="icon-box">
                     <img
                       src={cat.img || cat.image || cat.svg_path || Logo}
-                      alt={cat.name}
+                      alt=""
+                      aria-hidden="true"
                       onError={(e) => {
                         e.target.onerror = null;
                         e.target.src = Logo;
-                      }
-                      }
+                      }}
                     />
-
                   </div>
 
                   <h6 className='text-truncate'>{cat.name}</h6>
                   <span className='text-truncate'>{t('home.explore_now')}</span>
-                </div>
+                </button>
               </div>
             ))}
           </div>
@@ -591,55 +477,20 @@ export default function Home() {
       </section>
 
 
-      {/* ===== ADVERTISE CAROUSEL ===== */}
-      {/* {advertises.length > 0 && (
-        <div className="container pb-4">
-          <div onClick={() => handleCategory(cat)} style={{ position: 'relative', borderRadius: 12, overflow: 'hidden' }}>
-            <img src={`/${advertises[adIdx]?.image}`} alt={advertises[adIdx]?.advertise_name}
-              style={{ width: '100%', height: 200, objectFit: 'cover' }}
-              onError={e => e.target.style.display = 'none'} />
-            <button onClick={() => setAdIdx(p => (p - 1 + advertises.length) % advertises.length)}
-              style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.5)', border: 'none', color: '#fff', borderRadius: '50%', width: 30, height: 30 }}>‹</button>
-            <button onClick={() => setAdIdx(p => (p + 1) % advertises.length)}
-              style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.5)', border: 'none', color: '#fff', borderRadius: '50%', width: 30, height: 30 }}>›</button>
-          </div>
-        </div>
-      )} */}
-
-      {/* ===== FIND EXPERTS SCROLL ===== */}
-      {/* <section className="py-4" style={{ background: '#fff' }}>
-        <div className="container">
-          <h2 className="section-title text-center mb-4">Find Experts Fast</h2>
-          <div className="d-flex align-items-center gap-2">
-            <button onClick={() => scrollCats(-1)} className="btn btn-outline-secondary btn-sm">‹</button>
-            <div ref={scrollRef} style={{ display: 'flex', gap: 12, overflowX: 'auto', scrollBehavior: 'smooth', padding: '8px 0' }}
-              className="hide-scrollbar">
-              {(popularCategories.length > 0 ? popularCategories : translatedFallbackCats).map(cat => (
-                <div key={cat._id || cat.id} style={{ minWidth: 100, background: '#f8f9fa', borderRadius: 10, padding: '12px 8px', textAlign: 'center', cursor: 'pointer', flexShrink: 0 }}>
-                  <img src={cat.img || cat.image || cat.svg_path || 'https://via.placeholder.com/40'} alt={cat.name} style={{ width: 40, height: 40, objectFit: 'contain' }}
-                    onError={e => e.target.style.display = 'none'} />
-                  <p style={{ fontSize: 11, margin: 0, marginTop: 6, fontWeight: 600 }}>{cat.name}</p>
-                </div>
-              ))}
-            </div>
-            <button onClick={() => scrollCats(1)} className="btn btn-outline-secondary btn-sm">›</button>
-          </div>
-        </div>
-      </section> */}
-      <section className="py-4 fast-expert-section">
+      <section className="cw-section fast-expert-section" style={{ paddingTop: 'var(--cw-s6)', paddingBottom: 'var(--cw-s6)' }}>
         <div className="container">
           <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
             <div>
-              <h2 className="section-title mb-1 playwrite-no">{t('home.find_experts')}</h2>
-              <p className="text-muted small mb-0">{t('home.browse_cats')}</p>
+              <h2 className="cw-display cw-display--section mb-1" style={{ fontSize: 'clamp(1.25rem,2.5vw,1.75rem)' }}>{t('home.find_experts')}</h2>
+              <p className="section-subtitle mb-0">{t('home.browse_cats')}</p>
             </div>
 
             <div className="d-flex gap-2">
-              <button onClick={() => scrollCats(-1)} className="scroll-btn">
-                ‹
+              <button onClick={() => scrollCats(-1)} className="scroll-btn" aria-label="Scroll categories left">
+                <i className="fa-solid fa-chevron-left" aria-hidden="true"></i>
               </button>
-              <button onClick={() => scrollCats(1)} className="scroll-btn">
-                ›
+              <button onClick={() => scrollCats(1)} className="scroll-btn" aria-label="Scroll categories right">
+                <i className="fa-solid fa-chevron-right" aria-hidden="true"></i>
               </button>
             </div>
           </div>
@@ -651,92 +502,27 @@ export default function Home() {
             {(popularCategories.length > 0
               ? popularCategories
               : translatedFallbackCats).map(cat => (
-                <div
+                <button
+                  type="button"
                   key={cat._id || cat.id || cat.name}
-                  className="expert-card"
+                  className="expert-card border-0 cw-lift"
                   onClick={() => handleCategory(cat)}
                 >
-                  <Link to={cat.slug} className='text-decoration-none' >
-                    <img
-                      src={
-                        cat.img ||
-                        cat.image ||
-                        cat.svg_path ||
-                        "https://media.istockphoto.com/id/2151669184/vector/vector-flat-illustration-in-grayscale-avatar-user-profile-person-icon-gender-neutral.jpg?s=612x612&w=0&k=20&c=UEa7oHoOL30ynvmJzSCIPrwwopJdfqzBs0q69ezQoM8="
-                      }
-                      alt={cat.name}
-                      onError={e => (e.target.style.display = "none")}
-                    />
-                    <p>{cat.name}</p>
-                  </Link>
-                </div>
+                  <img
+                    src={cat.img || cat.image || cat.svg_path || Logo}
+                    alt=""
+                    aria-hidden="true"
+                    onError={(e) => { e.target.onerror = null; e.target.src = Logo; }}
+                  />
+                  <p>{cat.name}</p>
+                </button>
               ))}
           </div>
         </div>
       </section>
 
       {/* ===== REPAIRS & DAILY NEEDS ===== */}
-      {/* <section className="py-5">
-        <div className="container">
-          <div className="row g-4">
-           
-            <div className="col-lg-6">
-              <div className="need-box">
-                <h3 className="mb-3 fw-bold">🔧 Repairs & Services</h3>
-                <div className="row g-2">
-                  {[
-                    { name: 'AC Service', img: 'https://citywala.com/assets/images/repair1.jpg' },
-                    { name: 'Car Service', img: 'https://citywala.com/assets/images/repair2.jpg' },
-                    { name: 'Bike Service', img: 'https://citywala.com/assets/images/repair3.jpg' },
-                  ].map(item => (
-                    <div key={item.name} className="col-4">
-                      <div style={{ borderRadius: 8, overflow: 'hidden', cursor: 'pointer', position: 'relative' }}>
-                        <img src={item.img} alt={item.name} style={{ width: '100%', height: 100, objectFit: 'cover' }}
-                          onError={e => { e.target.src = 'https://via.placeholder.com/200x100?text=' + item.name }} />
-                        <div style={{ background: 'rgba(0,0,0,0.5)', padding: '4px 8px', position: 'absolute', bottom: 0, left: 0, right: 0 }}>
-                          <p style={{ color: '#fff', margin: 0, fontSize: 11, fontWeight: 600 }}>{item.name}</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-3 text-end">
-                  <Link to="/furniture-repair" className="btn btn-sm btn-outline-primary">View All</Link>
-                </div>
-              </div>
-            </div>
-
-           
-            <div className="col-lg-6">
-              <div className="need-box">
-                <h3 className="mb-3 fw-bold">🛒 Daily Needs</h3>
-                <div className="row g-2">
-                  {[
-                    { name: 'Labour Worker', img: 'https://citywala.com/assets/images/daily-need1.jpg' },
-                    { name: 'Grocery', img: 'https://citywala.com/assets/images/daily-need2.jpg' },
-                    { name: 'Electricians', img: 'https://citywala.com/assets/images/daily-need3.jpg' },
-                  ].map(item => (
-                    <div key={item.name} className="col-4">
-                      <div style={{ borderRadius: 8, overflow: 'hidden', cursor: 'pointer', position: 'relative' }}>
-                        <img src={item.img} alt={item.name} style={{ width: '100%', height: 100, objectFit: 'cover' }}
-                          onError={e => { e.target.src = 'https://via.placeholder.com/200x100?text=' + item.name }} />
-                        <div style={{ background: 'rgba(0,0,0,0.5)', padding: '4px 8px', position: 'absolute', bottom: 0, left: 0, right: 0 }}>
-                          <p style={{ color: '#fff', margin: 0, fontSize: 11, fontWeight: 600 }}>{item.name}</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-3 text-end">
-                  <Link to="/daily-necessary" className="btn btn-sm btn-outline-primary">View All</Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section> */}
-
-      <section className="py-5 service-section">
+      <section className="cw-section service-section" style={{ paddingTop: 'var(--cw-s6)', paddingBottom: 'var(--cw-s6)' }}>
         <div className="container">
           <div className="row g-4">
 
@@ -747,7 +533,10 @@ export default function Home() {
                 <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
                   <div>
                     <span className="mini-label">{t('home.top_picks')}</span>
-                    <h3 className="service-title">{t('home.repairs')}</h3>
+                    <h3 className="service-title">
+                      <i className="fa-solid fa-screwdriver-wrench me-2" style={{ color: 'var(--cw-blue-600)', fontSize: 18 }} aria-hidden="true"></i>
+                      {t('home.repairs')}
+                    </h3>
                   </div>
 
                   <Link to="/categories/furniture-business-and-services" className="view-btn">
@@ -757,46 +546,22 @@ export default function Home() {
 
                 <div className="row g-3">
                   {[
-                    {
-                      id: 'ac',
-                      name: t('home.svc_ac'),
-                      img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRq5mkB5-h-716IXKXsWaAv2qq-o0uhtet0iKTClw3Emd0GI1EdjAJ52WA&s=10',
-                      url: '/categories/furniture-business-and-services',
-                    },
-                    {
-                      id: 'car',
-                      name: t('home.svc_car'),
-                      img: 'https://www.fasthelp.in/wp-content/uploads/2022/09/Home-Maintenance.jpg',
-                      url: '/categories/furniture-business-and-services',
-                    },
-                    {
-                      id: 'bike',
-                      name: t('home.svc_bike'),
-                      img: 'https://wandlcollision.com/wp-content/uploads/2023/02/Why-a-Dent-Needs-Immediate-Repair-North-Umberland-PA-Auto-Body-Shop.jpg',
-                      url: '/categories/furniture-business-and-services',
-                    },
+                    { id: 'ac', name: t('home.svc_ac'), url: '/categories/furniture-business-and-services' },
+                    { id: 'car', name: t('home.svc_car'), url: '/categories/furniture-business-and-services' },
+                    { id: 'bike', name: t('home.svc_bike'), url: '/categories/furniture-business-and-services' },
                   ].map((item) => (
-                    <div
-                      key={item.id}
-                      className="col-6 col-sm-4"
-                    >
-                      <a href={item.url} className="service-box">
+                    <div key={item.id} className="col-6 col-sm-4">
+                      <Link to={item.url} className="service-box">
                         <img
-                          src={item.img}
-                          alt={item.name}
+                          src={ServicePlaceholder}
+                          alt=""
+                          aria-hidden="true"
                           className="img-fluid"
-                          // onError={(e) => {
-                          //   e.target.src =
-                          //     "https://via.placeholder.com/200x100?text=" +
-                          //     item.id;
-                          // }}
-                            onError={(e) => {
-                            e.target.src =
-                              "https://stokecoll.ac.uk/wp-content/uploads/sites/138/2021/11/BCL_1149-1280x720.jpg" +
-                              item.id;
-                          }}
                         />
-                      </a>
+                        <span className="service-overlay">
+                          <p>{item.name}</p>
+                        </span>
+                      </Link>
                     </div>
                   ))}
                 </div>
@@ -810,7 +575,10 @@ export default function Home() {
                 <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
                   <div>
                     <span className="mini-label">{t('home.essentials')}</span>
-                    <h3 className="service-title">{t('home.daily_needs')}</h3>
+                    <h3 className="service-title">
+                      <i className="fa-solid fa-cart-shopping me-2" style={{ color: 'var(--cw-orange-500)', fontSize: 18 }} aria-hidden="true"></i>
+                      {t('home.daily_needs')}
+                    </h3>
                   </div>
 
                   <Link to="/categories/daily-necessity" className="view-btn">
@@ -820,46 +588,22 @@ export default function Home() {
 
                 <div className="row g-3">
                   {[
-                    {
-                      id: 'labour',
-                      name: t('home.svc_labour'),
-                      img: 'https://ebclearning.com/asset-v1:EBC-Learning+labour-and-employment-laws+2023+type@asset+block@labour-and-employment-laws-tile.webp',
-                      url: '/categories/daily-necessity',
-                    },
-                    {
-                      id: 'grocery',
-                      name: t('home.svc_grocery'),
-                      img: 'https://imgstaticcontent.lbb.in/lbbnew/wp-content/uploads/sites/1/2015/02/21182111/210317CheeseStoresInDelhi04.jpg',
-                      url: '/categories/daily-necessity/local-shops',
-                    },
-                    {
-                      id: 'electricians',
-                      name: t('home.svc_electricians'),
-                      img: 'https://skilled.peopleready.com/wp-content/uploads/sites/2/2024/02/CS-2843_PR_Q1-2024-QuestionsBlogPostImages_1000x460_Electrician.png',
-                      url: '/categories/daily-necessity/electrician',
-                    },
+                    { id: 'labour', name: t('home.svc_labour'), url: '/categories/daily-necessity' },
+                    { id: 'grocery', name: t('home.svc_grocery'), url: '/categories/daily-necessity/local-shops' },
+                    { id: 'electricians', name: t('home.svc_electricians'), url: '/categories/daily-necessity/electrician' },
                   ].map((item) => (
-                    <div
-                      key={item.id}
-                      className="col-6 col-sm-4"
-                    >
-                      <a href={item.url} className="service-box">
+                    <div key={item.id} className="col-6 col-sm-4">
+                      <Link to={item.url} className="service-box">
                         <img
-                          src={item.img}
-                          alt={item.name}
+                          src={ServicePlaceholder}
+                          alt=""
+                          aria-hidden="true"
                           className="img-fluid"
-                          // onError={(e) => {
-                          //   e.target.src =
-                          //     "https://stokecoll.ac.uk/wp-content/uploads/sites/138/2021/11/BCL_1149-1280x720.jpg" +
-                          //     item.id;
-                          // }}
-                            onError={(e) => {
-                            e.target.src =
-                              "https://stokecoll.ac.uk/wp-content/uploads/sites/138/2021/11/BCL_1149-1280x720.jpg" +
-                              item.id;
-                          }}
                         />
-                      </a>
+                        <span className="service-overlay">
+                          <p>{item.name}</p>
+                        </span>
+                      </Link>
                     </div>
                   ))}
                 </div>
@@ -871,58 +615,46 @@ export default function Home() {
         </div>
       </section>
 
-
       {/* ===== TESTIMONIALS ===== */}
-      {/* ===== TESTIMONIALS ===== */}
-      <section
-        className="py-5"
-        style={{
-          background:
-            "linear-gradient(135deg,#1075be11,#f46f2611)",
-        }}
-      >
+      <section className="cw-section" style={{ background: 'var(--cw-gradient-soft)', paddingTop: 'var(--cw-s6)', paddingBottom: 'var(--cw-s6)' }}>
         <div className="container">
 
-          <h2 className="section-title text-center mb-5">
+          <h2 className="cw-display cw-display--section text-center mb-5">
             {t('home.testimonials')}
           </h2>
 
           <Slider {...settings}>
-            {TESTIMONIALS.map((t, i) => (
+            {TESTIMONIALS.map((item, i) => (
               <div key={i} className="px-2">
 
                 <div className="testimonial-card">
 
                   <i
                     className="fa-solid fa-quote-left mb-3"
-                    style={{
-                      color: "#1075be",
-                      fontSize: 28,
-                    }}
+                    style={{ color: 'var(--cw-orange-500)', fontSize: 20 }}
+                    aria-hidden="true"
                   ></i>
 
                   <p className="testimonial-text">
-                    {t.text}
+                    {item.text}
                   </p>
 
                   <div className="d-flex align-items-center gap-3 mt-3">
 
                     <img
-                      src={t.img}
-                      alt={t.name}
+                      src={item.img || AvatarPlaceholder}
+                      alt=""
+                      aria-hidden="true"
                       className="testimonial-img"
-                      onError={(e) =>
-                      (e.target.src =
-                        "https://media.istockphoto.com/id/2151669184/vector/vector-flat-illustration-in-grayscale-avatar-user-profile-person-icon-gender-neutral.jpg?s=612x612&w=0&k=20&c=UEa7oHoOL30ynvmJzSCIPrwwopJdfqzBs0q69ezQoM8=")
-                      }
+                      onError={(e) => { e.target.onerror = null; e.target.src = AvatarPlaceholder; }}
                     />
 
                     <div>
                       <h6 className="mb-0 fw-bold">
-                        {t.name}
+                        {item.name}
                       </h6>
 
-                      <div className="text-warning small">
+                      <div style={{ color: 'var(--cw-amber-400)', fontSize: 13 }} aria-label="5 out of 5 stars">
                         ★★★★★
                       </div>
                     </div>
@@ -939,22 +671,16 @@ export default function Home() {
       </section>
 
       {/* ===== CTA ===== */}
-      <section
-        className="py-5"
-        style={{
-          background:
-            "linear-gradient(135deg,#1075be,#f46f26)",
-        }}
-      >
+      <section className="cw-section cw-cta-banner" style={{ paddingTop: 'var(--cw-s6)', paddingBottom: 'var(--cw-s6)' }}>
         <div className="container">
           <div className="row justify-content-center">
-            <div className="col-12 col-lg-9 text-center">
+            <div className="col-12 col-lg-9 text-center position-relative">
 
-              <h2 className="text-white fw-bold mb-3 cta-heading">
+              <h2 className="cw-display cw-display--cta text-white mb-3">
                 {t('home.cta_title')}
               </h2>
 
-              <p className="text-white opacity-75 mb-4 cta-text">
+              <p className="text-white mb-4" style={{ opacity: .85, fontSize: 16 }}>
                 {t('home.cta_subtitle')}
               </p>
 
@@ -962,19 +688,19 @@ export default function Home() {
 
                 <Link
                   to="/register-business"
-                  className="btn btn-light btn-lg fw-semibold cta-btn w-100 w-sm-auto"
+                  className="nav-btn cw-btn-on-dark cta-btn w-100 w-sm-auto"
                 >
-                  <i className="fa-solid fa-handshake me-2"></i>
+                  <i className="fa-solid fa-handshake" aria-hidden="true"></i>
                   {t('home.register_partner')}
                 </Link>
 
                 <a
                   href="https://wa.me/919875677667"
                   target="_blank"
-                  rel="noreferrer"
-                  className="btn btn-outline-light btn-lg cta-btn w-100 w-sm-auto"
+                  rel="noopener noreferrer"
+                  className="nav-btn cw-btn-outline-on-dark cta-btn w-100 w-sm-auto"
                 >
-                  <i className="fa-solid fa-phone me-2"></i>
+                  <i className="fa-solid fa-phone" aria-hidden="true"></i>
                   {t('home.contact_us')}
                 </a>
 

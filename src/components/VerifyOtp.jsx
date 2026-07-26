@@ -1,12 +1,14 @@
 import { useTranslation } from "react-i18next";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import API from "../api/axios";
+import AuthCard from "./ui/AuthCard";
 
 const VerifyOtp = () => {
   const { t } = useTranslation();
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -15,8 +17,12 @@ const VerifyOtp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
 
-    if (!otp) return alert("Enter OTP");
+    if (!otp) {
+      setError(t("auth.otp_required"));
+      return;
+    }
 
     try {
       setLoading(true);
@@ -34,51 +40,40 @@ const VerifyOtp = () => {
         state: { resetToken: data.resetToken },
       });
 
-    } catch (error) {
-      alert("Invalid OTP");
+    } catch (err) {
+      setError(err.response?.data?.message || t("auth.otp_invalid"));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="auth-wrapper">
-      <div className="container">
-        <div className="row justify-content-center">
-          <div className="col-12 col-md-5">
-            <div className="card p-4 shadow border-0">
+    <AuthCard eyebrow={t('home.trusted_label')} title={t("partner.verify_otp")}>
+      <h2 className="text-center mb-2">{t("partner.verify_otp")}</h2>
+      <p className="text-body-secondary text-center mb-4">
+        {t("partner.otp_sent_to")} {phone}
+      </p>
 
-              <h4 className="fw-bold text-center mb-3">{t("partner.verify_otp")}</h4>
+      {error && <div className="alert alert-danger py-2">{error}</div>}
 
-              <p className="text-muted text-center">
-                {t("common.loading")} {t("partner.otp_sent_to")} {phone}
-              </p>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          inputMode="numeric"
+          className="form-control mb-3 text-center"
+          style={{ height: 56, fontSize: 22, letterSpacing: "0.5em" }}
+          placeholder={t("auth.enter_otp")}
+          value={otp}
+          onChange={(e) => setOtp(e.target.value)}
+          maxLength={6}
+          required
+        />
 
-              <form onSubmit={handleSubmit}>
-                <input
-                  type="text"
-                  className="form-control mb-3"
-                  placeholder={t("auth.enter_otp")}
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                  maxLength="6"
-                  required
-                />
-
-                <button
-                  className="btn btn-primary w-100"
-                  disabled={loading}
-                >
-                  {loading ? t("common.loading") : t("partner.verify_otp")}
-                </button>
-                {loading ? t("common.loading") : t("partner.verify_otp")}
-              </form>
-
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+        <button className="nav-btn primary w-100" style={{ height: 48 }} disabled={loading}>
+          {loading ? t("partner.verifying") : t("partner.verify_otp")}
+        </button>
+      </form>
+    </AuthCard>
   );
 };
 

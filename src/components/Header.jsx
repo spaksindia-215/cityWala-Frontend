@@ -8,6 +8,17 @@ import { useTranslation } from "react-i18next";
 import { languages } from "../i18n/config/languages";
 import GoogleTranslate from './googleTranslate'
 
+const useScrolled = (threshold = 4) => {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > threshold);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [threshold]);
+  return scrolled;
+};
+
 
 export default function Header() {
   const { t, i18n } = useTranslation();
@@ -32,6 +43,8 @@ export default function Header() {
   const navigate = useNavigate()
   const [categories, setCategories] = useState([])
   const [menuOpen, setMenuOpen] = useState(false)
+  const [helpOpen, setHelpOpen] = useState(false)
+  const scrolled = useScrolled()
 
   const { user, partner, logout } = useAuth();
 
@@ -130,92 +143,99 @@ useEffect(() => {
 }, [])
   return (
     <>
-      {/* ===== TOP HEADER ===== */}
+      {/* ===== ROW 1: UTILITY BAR ===== */}
       <div className="header-top py-2">
         <div className="container">
-          <div className="d-flex flex-column flex-md-row justify-content-between align-items-start gap-2">
+          <div className="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
 
-            <ul className="top-contact mb-0">
+            <ul className="top-contact mb-0 d-none d-md-flex">
               <li>
-                <i className="fa-solid fa-phone"></i>
-                +91 836 874 1739
+                <i className="fa-solid fa-phone" aria-hidden="true"></i>
+                <a href="tel:+918368741739">+91 836 874 1739</a>
               </li>
               <li>
-                <i className="fa-solid fa-envelope"></i>
+                <i className="fa-solid fa-envelope" aria-hidden="true"></i>
                 <a href="mailto:citywala1959@gmail.com">
                   citywala1959@gmail.com
                 </a>
               </li>
             </ul>
 
-            {/* Language Selector */}
-            {/* <div className="dropdown lang-selector">
-              <button
-                className="btn btn-light btn-sm dropdown-toggle d-flex align-items-center gap-2"
-                type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-                style={{ minWidth: "140px" }}
-              >
-                <i className="fa-solid fa-globe text-muted"></i>
-                <span className="text-capitalize">
-                  {languages.find((l) => l.code === i18n.language)?.name || "Language"}
-                </span>
-              </button>
-
-              <ul
-                className="dropdown-menu shadow-sm"
-                style={{
-                  maxHeight: "200px",
-                  overflowY: "auto",
-                }}
-              >
-                {languages.map((lng) => (
-                  <li key={lng.code}>
-                    <button
-                      className={`dropdown-item d-flex align-items-center gap-2 ${i18n.language === lng.code ? "active" : ""
-                        }`}
-                      onClick={() => changeLanguage(lng.code)}
-                    >
-                      <i className="fa-solid fa-check" style={{ opacity: i18n.language === lng.code ? 1 : 0 }}></i>
-                      {lng.name}
-                    </button>
-                  </li>
-                ))}
+            <div className="d-flex align-items-center gap-3 gap-md-4">
+              <ul className="top-nav mb-0 d-none d-md-flex">
+                <li>
+                  <Link to="/about-us">{t('header.about_us')}</Link>
+                </li>
+                <li>
+                  <Link to="/register-business">{t('header.list_business')}</Link>
+                </li>
+                <li className="dropdown">
+                  <button
+                    type="button"
+                    className="dropdown-toggle"
+                    data-bs-toggle="dropdown"
+                    aria-expanded={helpOpen}
+                    onClick={() => setHelpOpen((v) => !v)}
+                  >
+                    {t('header.help_support')}
+                  </button>
+                  <ul className="dropdown-menu dropdown-menu-end shadow-sm">
+                    <li>
+                      <Link className="dropdown-item" to="/contact-us">
+                        {t('header.contact_support')}
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/terms-and-conditions">
+                        {t('footer.terms')}
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/privacy-policy">
+                        {t('footer.privacy')}
+                      </Link>
+                    </li>
+                  </ul>
+                </li>
               </ul>
-            </div> */}
 
-            <GoogleTranslate />
+              <GoogleTranslate />
+            </div>
           </div>
         </div>
       </div>
 
-      {/* ===== MAIN HEADER ===== */}
-       <header className="main-header sticky-top">
+      {/* ===== ROW 2: MAIN BAR ===== */}
+       <header className={`main-header sticky-top${scrolled ? ' is-scrolled' : ''}`}>
         <div className="container">
-          <nav className="navbar navbar-expand-lg py-3">
+          <nav className="navbar navbar-expand-lg py-2">
 
-            {/* Logo */}
-            <Link to="/" className="navbar-brand">
-              <img src={Logo} alt="CityWala" className="logo-img" />
+            {/* Logo + tagline */}
+            <Link to="/" className="header-brand navbar-brand">
+              <div className="logo-row">
+                <img src={Logo} alt="CityWala" className="logo-img" />
+              </div>
+              <span className="header-tagline">{t('header.tagline')}</span>
             </Link>
 
             {/* Mobile Toggle */}
             <button
               className="navbar-toggler border-0 shadow-none"
               onClick={() => setMenuOpen(!menuOpen)}
+              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={menuOpen}
             >
-              <i className="fa-solid fa-bars"></i>
+              <i className="fa-solid fa-bars" aria-hidden="true"></i>
             </button>
 
             <div className={`collapse navbar-collapse ${menuOpen ? "show" : ""}`}>
 
-              {/* Search Area */}
-              <div className="header-search-area">
+              {/* Compact pill search bar */}
+              <div className="header-search-pill mx-lg-4 my-3 my-lg-0">
 
-                {/* Category */}
                 <select
                   className="form-select category-select"
+                  aria-label={t('header.categories')}
                   onChange={(e) => {
                     const selected = categories.find((c) => c._id === e.target.value);
                     if (selected) handleCategories(selected);
@@ -227,8 +247,7 @@ useEffect(() => {
                   ))}
                 </select>
 
-                {/* Search */}
-                <div className="search-box position-relative">
+                <div className="search-box">
                   <input
                     type="text"
                     className="form-control"
@@ -238,19 +257,6 @@ useEffect(() => {
                     onKeyDown={(e) => { if (e.key === "Enter") handleSearch(); }}
                   />
 
-                  <button
-                    className="search-btn"
-                    onClick={() => {
-                      const selected = categories.find(
-                        (c) => c.name.toLowerCase() === query.trim().toLowerCase()
-                      );
-                      if (selected) handleCategories(selected);
-                    }}
-                  >
-                    <i className="fa-solid fa-magnifying-glass"></i>
-                  </button>
-
-                  {/* Search Dropdown */}
                   {filteredResults.length > 0 && (
                     <div className="search-dropdown">
                       {filteredResults.map((item) => (
@@ -269,87 +275,110 @@ useEffect(() => {
                   )}
                 </div>
 
+                <button
+                  type="button"
+                  className="search-btn"
+                  aria-label={t('search')}
+                  onClick={() => {
+                    const selected = categories.find(
+                      (c) => c.name.toLowerCase() === query.trim().toLowerCase()
+                    );
+                    if (selected) handleCategories(selected);
+                  }}
+                >
+                  <i className="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                </button>
               </div>
-<ul className="header-actions ms-auto">
 
-  {/* Total Users */}
-  <li>
-    <div className="nav-btn outline">
-      Total Users: {users?.length || 0}
-    </div>
-  </li>
+              <ul className="header-actions ms-lg-auto">
 
-  {/* Partner Dashboard */}
-  {currentRole === "partner" && (
-    <li>
-      <Link
-        to="/partner/dashboard"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="nav-btn outline"
-      >
-        {t('header.dashboard')}
-      </Link>
-    </li>
-  )}
+                {/* Total Users stat */}
+                <li>
+                  <div className="header-stat">
+                    <span className="header-stat__icon">
+                      <i className="fa-solid fa-users" aria-hidden="true"></i>
+                    </span>
+                    <span>
+                      <span className="header-stat__label d-block">{t('header.total_users')}</span>
+                      <span className="header-stat__value">{users?.length || 0}</span>
+                    </span>
+                  </div>
+                </li>
 
-  {/* Login/Profile */}
-  {currentUser ? (
-    <li>
-      <div className="dropdown">
-        <button
-          className="nav-btn primary dropdown-toggle d-flex align-items-center gap-2"
-          data-bs-toggle="dropdown"
-        >
-          <span className="avatar">
-            {currentUser?.name?.charAt(0)?.toUpperCase()}
-          </span>
+                {/* Partner Dashboard */}
+                {currentRole === "partner" && (
+                  <li>
+                    <Link
+                      to="/partner/dashboard"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="nav-btn outline"
+                    >
+                      {t('header.dashboard')}
+                    </Link>
+                  </li>
+                )}
 
-          <span className="d-none d-md-inline">
-            {currentUser?.name}
-          </span>
-        </button>
+                {/* Login/Profile */}
+                {currentUser ? (
+                  <li>
+                    <div className="dropdown">
+                      <button
+                        className="nav-btn outline dropdown-toggle d-flex align-items-center gap-2"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
+                        <span className="avatar">
+                          {currentUser?.name?.charAt(0)?.toUpperCase()}
+                        </span>
 
-        <ul className="dropdown-menu dropdown-menu-end shadow border-0">
-          <li className="px-3 py-2 border-bottom">
-            <div className="fw-semibold">{currentUser?.name}</div>
-            <small className="text-muted">{currentUser?.email}</small>
-          </li>
+                        <span className="d-none d-md-inline">
+                          {currentUser?.name}
+                        </span>
+                      </button>
 
-          <li>
-            <button
-              className="dropdown-item text-danger"
-              onClick={handleLogout}
-            >
-              {t('header.logout')}
-            </button>
-          </li>
-        </ul>
-      </div>
-    </li>
-  ) : (
-    <>
-      <li>
-        <Link to="/login" className="nav-btn primary" style={{ fontSize: '13px' }}>
-          👤 {t('header.customer_login')}
-        </Link>
-      </li>
-      <li>
-        <Link to="/partner/login" className="nav-btn outline" style={{ fontSize: '13px' }}>
-          💼 {t('header.partner_login')}
-        </Link>
-      </li>
-    </>
-  )}
+                      <ul className="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                        <li className="px-3 py-2 border-bottom">
+                          <div className="fw-semibold">{currentUser?.name}</div>
+                          <small className="text-muted">{currentUser?.email}</small>
+                        </li>
 
-  {/* Register */}
-  <li>
-    <Link to="/register-business" className="nav-btn success">
-      {t('header.list_business')}
-    </Link>
-  </li>
+                        <li>
+                          <button
+                            className="dropdown-item text-danger"
+                            onClick={handleLogout}
+                          >
+                            {t('header.logout')}
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                ) : (
+                  <>
+                    <li>
+                      <Link to="/login" className="nav-btn outline">
+                        <i className="fa-solid fa-user" aria-hidden="true"></i>
+                        {t('header.customer_login')}
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/partner/login" className="nav-btn outline-accent">
+                        <i className="fa-solid fa-briefcase" aria-hidden="true"></i>
+                        {t('header.partner_login')}
+                      </Link>
+                    </li>
+                  </>
+                )}
 
-</ul>
+                {/* Register */}
+                <li>
+                  <Link to="/register-business" className="nav-btn primary">
+                    {t('header.list_business')}
+                  </Link>
+                </li>
+
+              </ul>
             </div>
           </nav>
         </div>

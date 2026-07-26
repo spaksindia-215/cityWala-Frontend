@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import API from "../api/axios";
 import { FiFileText, FiCalendar } from "react-icons/fi";
 import Seo from "../seo/Seo";
 import Breadcrumbs from "../components/Breadcrumbs";
 import { webPageSchema, graph } from "../seo/schema";
+import HeroBanner from "../components/ui/HeroBanner";
 
 const TITLE = "Privacy Policy";
 const DESCRIPTION =
@@ -272,7 +273,7 @@ const PrivacyPolicy = () => {
           setUpdatedAt(data.updatedAt || "2026-06-17");
         }
       } catch (error) {
-        console.log("Using static content - API not available");
+        // API unavailable — fall back to the bundled static content above.
       } finally {
         setLoading(false);
       }
@@ -292,7 +293,7 @@ const PrivacyPolicy = () => {
 
   if (loading) {
     return (
-      <div className="d-flex justify-content-center align-items-center min-vh-100 bg-light">
+      <div className="d-flex justify-content-center align-items-center min-vh-100">
         <div className="spinner-border text-primary" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
@@ -301,312 +302,52 @@ const PrivacyPolicy = () => {
   }
 
   return (
-    <div style={{ background: "#f5f5f5", minHeight: "100vh" }}>
+    <div>
       <Seo
         title={TITLE}
         description={DESCRIPTION}
         path="/privacy-policy"
         jsonLd={graph(webPageSchema({ path: "/privacy-policy", name: TITLE, description: DESCRIPTION }))}
       />
-      <div className="container pt-4">
-        <Breadcrumbs items={[{ name: "Privacy Policy" }]} />
-      </div>
-      {/* HERO SECTION */}
-      <section
-        className="position-relative overflow-hidden"
-        style={{
-          background: "linear-gradient(135deg,#1075be 0%,#f46f26 45%,#29528c 100%)",
-          padding: "90px 0 80px",
-        }}
-      >
-        {/* Background Shapes */}
-        <div
-          style={{
-            position: "absolute",
-            top: "-80px",
-            left: "-80px",
-            width: "220px",
-            height: "220px",
-            borderRadius: "50%",
-            background: "rgba(255,255,255,0.08)",
-          }}
-        ></div>
 
-        <div
-          style={{
-            position: "absolute",
-            bottom: "-100px",
-            right: "-60px",
-            width: "280px",
-            height: "280px",
-            borderRadius: "50%",
-            background: "rgba(255,255,255,0.06)",
-          }}
-        ></div>
+      <HeroBanner
+        breadcrumbs={<Breadcrumbs items={[{ name: "Privacy Policy" }]} onDark />}
+        eyebrow="Privacy & Data Protection"
+        title={title}
+        subtitle="We are committed to protecting your privacy and ensuring transparency about how we handle your data"
+      />
 
-        <div className="container position-relative">
-          <div className="row justify-content-center">
-            <div className="col-lg-10 text-center">
-              <span
-                className="d-inline-block px-4 py-2 mb-3 rounded-pill"
-                style={{
-                  background: "rgba(255,255,255,0.15)",
-                  color: "#fff",
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  backdropFilter: "blur(8px)",
-                }}
-              >
-                <FiFileText style={{ marginRight: "8px", verticalAlign: "middle" }} />
-                Privacy & Data Protection
-              </span>
+      <section className="cw-section">
+        <div className="container" style={{ maxWidth: "72ch" }}>
+          <div className="cw-card cw-card--feature">
+            {updatedAt && (
+              <div className="d-flex align-items-center gap-2 mb-4 pb-4" style={{ borderBottom: "1px solid var(--cw-gray-200)" }}>
+                <FiCalendar style={{ color: "var(--cw-orange-500)", fontSize: 18 }} />
+                <span className="small" style={{ color: "var(--cw-gray-700)" }}>
+                  Last Updated: <strong>{formatDate(updatedAt)}</strong>
+                </span>
+              </div>
+            )}
 
-              <h1
-                className="text-white fw-bold mb-3"
-                style={{
-                  fontSize: "clamp(2rem,5vw,4rem)",
-                  lineHeight: "1.2",
-                  fontFamily: "'Playfair Display', serif",
-                }}
-              >
-                {title}
-              </h1>
+            {content ? (
+              <div className="terms-content" dangerouslySetInnerHTML={{ __html: content }} />
+            ) : (
+              <div className="text-center py-5" style={{ color: "var(--cw-gray-500)" }}>
+                <FiFileText style={{ fontSize: 64, marginBottom: 20, opacity: .2 }} />
+                <p>No content available at the moment.</p>
+              </div>
+            )}
+          </div>
 
-              <p
-                className="text-white mx-auto mb-0"
-                style={{
-                  maxWidth: "700px",
-                  opacity: "0.9",
-                  fontSize: "18px",
-                }}
-              >
-                We are committed to protecting your privacy and ensuring transparency about how we handle your data
-              </p>
-            </div>
+          <div className="mt-4 p-3 rounded-3" style={{ background: "var(--cw-orange-50)", border: "1px solid var(--cw-orange-50)" }}>
+            <p className="mb-0 small" style={{ color: "var(--cw-gray-700)", lineHeight: 1.6 }}>
+              <strong style={{ color: "var(--cw-orange-500)" }}>Your Privacy Matters:</strong> We collect and use your
+              information only as described in this policy. You have the right to access, correct, or delete your
+              personal information. Contact us anytime if you have questions.
+            </p>
           </div>
         </div>
       </section>
-
-      {/* MAIN CONTENT SECTION */}
-      <section style={{ padding: "60px 0" }}>
-        <div className="container" style={{ maxWidth: "950px" }}>
-          <div className="row g-4">
-            {/* Main Content Card */}
-            <div className="col-lg-12">
-              <div
-                className="card shadow-sm border-0"
-                style={{
-                  borderRadius: "24px",
-                  padding: "40px 45px",
-                  background: "#fff",
-                  boxShadow: "0 8px 25px rgba(0, 0, 0, 0.06)",
-                }}
-              >
-                {/* Updated Date */}
-                {updatedAt && (
-                  <div
-                    className="d-flex align-items-center gap-2 mb-4 pb-4"
-                    style={{
-                      borderBottom: "2px solid #f0f0f0",
-                    }}
-                  >
-                    <FiCalendar
-                      style={{
-                        color: "#f46f26",
-                        fontSize: "18px",
-                      }}
-                    />
-                    <span
-                      style={{
-                        color: "#555",
-                        fontWeight: "500",
-                        fontSize: "14px",
-                      }}
-                    >
-                      Last Updated: <strong>{formatDate(updatedAt)}</strong>
-                    </span>
-                  </div>
-                )}
-
-                {/* Dynamic Content */}
-                {content ? (
-                  <div
-                    className="privacy-content"
-                    dangerouslySetInnerHTML={{ __html: content }}
-                  />
-                ) : (
-                  <div
-                    className="text-center py-5"
-                    style={{
-                      color: "#999",
-                    }}
-                  >
-                    <FiFileText
-                      style={{
-                        fontSize: "64px",
-                        marginBottom: "20px",
-                        opacity: "0.2",
-                      }}
-                    />
-                    <p>No content available at the moment.</p>
-                  </div>
-                )}
-              </div>
-
-              {/* Important Notice */}
-              <div
-                className="mt-4"
-                style={{
-                  background: "#fff3eb",
-                  border: "1px solid #ffe5d0",
-                  borderRadius: "16px",
-                  padding: "20px 24px",
-                }}
-              >
-                <p
-                  style={{
-                    margin: 0,
-                    color: "#333",
-                    fontSize: "14px",
-                    lineHeight: "1.6",
-                  }}
-                >
-                  <strong style={{ color: "#f46f26" }}>🔒 Your Privacy Matters:</strong> We collect and use your
-                  information only as described in this policy. You have the right to access, correct, or delete your
-                  personal information. Contact us anytime if you have questions.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Internal Scoped CSS for Dynamic Content */}
-      <style>{`
-        .privacy-content {
-          line-height: 1.8;
-          color: #555;
-        }
-
-        .privacy-content h1,
-        .privacy-content h2 {
-          font-family: 'Playfair Display', serif;
-          color: #1075be;
-          margin-top: 2rem;
-          margin-bottom: 1rem;
-          padding-bottom: 0.75rem;
-          border-bottom: 2px solid #f0f0f0;
-          font-size: 1.6rem;
-          font-weight: 600;
-        }
-
-        .privacy-content h3 {
-          font-family: 'Playfair Display', serif;
-          color: #333;
-          margin-top: 1.5rem;
-          margin-bottom: 0.75rem;
-          font-size: 1.25rem;
-          font-weight: 600;
-        }
-
-        .privacy-content h4 {
-          color: #333;
-          margin-top: 1.25rem;
-          margin-bottom: 0.6rem;
-          font-weight: 600;
-        }
-
-        .privacy-content p {
-          margin-bottom: 1.25rem;
-          text-align: justify;
-          color: #555;
-        }
-
-        .privacy-content ul,
-        .privacy-content ol {
-          margin-bottom: 1.5rem;
-          padding-left: 2rem;
-          color: #555;
-        }
-
-        .privacy-content li {
-          margin-bottom: 0.75rem;
-          line-height: 1.7;
-        }
-
-        .privacy-content strong {
-          color: #1075be;
-          font-weight: 600;
-        }
-
-        .privacy-content em {
-          color: #f46f26;
-          font-style: italic;
-        }
-
-        .privacy-content a {
-          color: #f46f26;
-          text-decoration: none;
-          font-weight: 500;
-          transition: 0.3s ease;
-        }
-
-        .privacy-content a:hover {
-          text-decoration: underline;
-          color: #1075be;
-        }
-
-        .privacy-content table {
-          width: 100%;
-          margin-bottom: 1.5rem;
-          border-collapse: collapse;
-          background: #fff;
-          border-radius: 8px;
-          overflow: hidden;
-        }
-
-        .privacy-content th,
-        .privacy-content td {
-          padding: 1rem;
-          text-align: left;
-          border-bottom: 1px solid #eee;
-        }
-
-        .privacy-content th {
-          background: linear-gradient(135deg, #1075be, #f46f26);
-          color: #fff;
-          font-weight: 600;
-        }
-
-        .privacy-content tr:last-child td {
-          border-bottom: none;
-        }
-
-        .privacy-content blockquote {
-          border-left: 4px solid #f46f26;
-          padding-left: 1.5rem;
-          margin: 1.5rem 0;
-          color: #777;
-          font-style: italic;
-        }
-
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-          .privacy-content h1,
-          .privacy-content h2 {
-            font-size: 1.4rem;
-          }
-
-          .privacy-content h3 {
-            font-size: 1.1rem;
-          }
-
-          .privacy-content ul,
-          .privacy-content ol {
-            padding-left: 1.5rem;
-          }
-        }
-      `}</style>
     </div>
   );
 };

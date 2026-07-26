@@ -1,8 +1,10 @@
-
-import React from "react";
+import { useTranslation } from "react-i18next";
+import DashboardPageHeader from "../../components/ui/DashboardPageHeader";
+import EmptyState from "../../components/ui/EmptyState";
 
 const PaymentHistory = () => {
-   
+    const { t } = useTranslation();
+
     const payments = [
         {
             id: "TXN001",
@@ -30,57 +32,61 @@ const PaymentHistory = () => {
         }
     ];
 
-    const getBadge = (status) => {
-        if (status === "paid") return "bg-success";
-        if (status === "pending") return "bg-warning text-dark";
-        if (status === "failed") return "bg-danger";
-        return "bg-secondary";
+    const getBadgeClass = (status) => {
+        if (status === "paid") return "cw-badge--success";
+        if (status === "pending") return "cw-badge--warning";
+        if (status === "failed") return "cw-badge--danger";
+        return "cw-badge--neutral";
     };
 
     return (
-        <div className="container py-4">
+        <div>
+            <DashboardPageHeader title={t("payment_history.title")} />
+            <p className="text-body-secondary mb-4">{t("payment_history.subtitle")}</p>
 
-            <h2 className="fw-bold mb-3">{t("payment_history")}</h2>
-            <p className="text-muted mb-4">{t("all_your_transactions_are_shown_below")}</p>
-
-            <div className="card shadow-sm border-0 rounded-4">
-
-                <div className="table-responsive">
-                    <table className="table align-middle mb-0">
-
-                        <thead className="table-light">
-                            <tr>
-                                <th>{t("transaction_id")}</th>
-                                <th>{t("plan")}</th>
-                                <th>{t("amount")}</th>
-                                <th>{t("status")}</th>
-                                <th>{t("method")}</th>
-                                <th>{t("date")}</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            {payments.map((p, i) => (
-                                <tr key={i}>
-                                    <td>{p.id}</td>
-                                    <td>{p.plan}</td>
-                                    <td>₹{p.amount}</td>
-                                    <td>
-                                        <span className={`badge ${getBadge(p.status)}`}>
-                                            {p.status}
-                                        </span>
-                                    </td>
-                                    <td>{p.method}</td>
-                                    <td>{p.date}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-
-                    </table>
+            {payments.length === 0 ? (
+                <div className="cw-card">
+                    <EmptyState
+                        icon="fa-receipt"
+                        title={t("payment_history.empty_title")}
+                        description={t("payment_history.empty_desc")}
+                    />
                 </div>
+            ) : (
+                <div className="cw-card cw-card--flat p-0">
+                    <div className="table-responsive">
+                        <table className="table cw-table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>{t("payment_history.transaction_id")}</th>
+                                    <th>{t("payment_history.plan")}</th>
+                                    <th className="text-end">{t("payment_history.amount")}</th>
+                                    <th>{t("payment_history.status")}</th>
+                                    <th>{t("payment_history.method")}</th>
+                                    <th>{t("payment_history.date")}</th>
+                                </tr>
+                            </thead>
 
-            </div>
-
+                            <tbody>
+                                {payments.map((p) => (
+                                    <tr key={p.id}>
+                                        <td>{p.id}</td>
+                                        <td>{p.plan}</td>
+                                        <td className="text-end">₹{p.amount}</td>
+                                        <td>
+                                            <span className={`badge rounded-pill cw-badge ${getBadgeClass(p.status)}`}>
+                                                {p.status}
+                                            </span>
+                                        </td>
+                                        <td>{p.method}</td>
+                                        <td>{p.date}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

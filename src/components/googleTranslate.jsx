@@ -118,17 +118,18 @@ const GoogleTranslate = () => {
       <div id="google_translate_element" style={{ display: "none" }} />
 
       {/* Custom dropdown */}
-      <SearchableSelect
-        options={languages}
-        value={selected}
-        onChange={changeLanguage}
-        placeholder="Search language..."
-        valueKey="code"
-        labelKey="name"
-        searchable={true}
-        className="form-select border-0 shadow-sm py-3 z-10"
-        style={{minWidth: "200px"}}
-      />
+      <div className="lang-selector">
+        <i className="fa-solid fa-globe" style={{ color: 'rgba(255,255,255,.7)', fontSize: 12 }} aria-hidden="true"></i>
+        <SearchableSelect
+          options={languages}
+          value={selected}
+          onChange={changeLanguage}
+          placeholder="Language"
+          valueKey="code"
+          labelKey="name"
+          variant="on-dark"
+        />
+      </div>
     </div>
   );
 };

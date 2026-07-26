@@ -52,7 +52,7 @@ export function SessionTimeoutModal({
           aria-label="Logout"
           title="Logout"
         >
-          ✕
+          <i className="fa-solid fa-xmark" aria-hidden="true"></i>
         </button>
 
         {/* Modal content */}

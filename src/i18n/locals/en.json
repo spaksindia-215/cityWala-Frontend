@@ -3,15 +3,36 @@
   "search": "Search",
   "delete": "Delete",
   "add_plan": "Add Plan",
+  "go_back": "Go Back",
+  "call_partner": "Call",
+  "contact_details": "Contact Details",
+  "contact_person": "Contact Person",
+  "official_email": "Official Email",
+  "mobile_number": "Mobile Number",
+  "company_website": "Company Website",
+  "business_overview": "Business Overview",
+  "about_company": "About the Company",
+  "full_registered_name": "Full Registered Name",
+  "postal_zip_code": "Postal / ZIP Code",
+  "office_address": "Office Address",
+  "partner_information_not_available": "This business profile is not available.",
+  "verified": "Verified",
+  "email": "Email",
   "header": {
-    "categories": "📂 Categories",
+    "categories": "Categories",
     "search_placeholder": "Search services...",
     "dashboard": "Dashboard",
     "login": "Login",
     "customer_login": "Customer Login",
     "partner_login": "Partner Login",
     "list_business": "List Business",
-    "logout": "Logout"
+    "logout": "Logout",
+    "tagline": "Find | Connect | Grow",
+    "total_users": "Total Users",
+    "about_us": "About Us",
+    "help_support": "Help & Support",
+    "faq": "FAQ",
+    "contact_support": "Contact Support"
   },
   "home": {
     "trusted_label": "Trusted Local Business Directory",
@@ -21,7 +42,8 @@
     "businesses": "Businesses Listed",
     "cities": "Cities Covered",
     "support": "Support Available",
-    "select_country": "🌍 Select Country",
+    "verified": "Verified Professionals",
+    "select_country": "Select Country",
     "search_state": "Search State",
     "search_city": "Search City",
     "category": "Category",
@@ -32,9 +54,9 @@
     "find_experts": "Find Experts Quickly",
     "browse_cats": "Browse Top Categories Instantly",
     "top_picks": "Top Picks",
-    "repairs": "🔧 Repairs & Services",
+    "repairs": "Repairs & Services",
     "essentials": "Essentials",
-    "daily_needs": "🛒 Daily Needs",
+    "daily_needs": "Daily Needs",
     "view_all": "View All",
     "testimonials": "What Our Customers Say",
     "cta_title": "Are You a Business Owner?",
@@ -111,10 +133,17 @@
     "no_registered_partners_found_in_this_category": "No registered partners found in this category",
     "subcategories": "Subcategories",
     "read_more": "Read more",
-    "read_less": "Read less"
+    "read_less": "Read less",
+    "choose_a_category_to_view_subcategories_and_businesses": "Choose a category to view subcategories and businesses.",
+    "no_businesses_in_category": "No businesses in this category yet",
+    "no_businesses_in_category_desc": "There are no registered businesses here right now. Try browsing another category.",
+    "browse_other_categories": "Browse other categories",
+    "no_categories_desc": "There are no categories to show right now. Please check back soon.",
+    "call": "Call"
   },
   "login": {
     "title": "Login",
+    "subtitle": "Customer Login",
     "email": "Email",
     "phone": "Phone",
     "email_label": "Email",
@@ -123,10 +152,18 @@
     "login_btn": "Login Now",
     "logging_in": "Logging in...",
     "new_here": "New Here?",
-    "create_account": "Create Account"
+    "create_account": "Create Account",
+    "are_you_partner": "Are you a partner?",
+    "partner_login": "Partner Login",
+    "hero_title": "Welcome back",
+    "hero_subtitle": "Log in to manage your bookings, saved businesses, and profile.",
+    "bullet_1": "Search 10,000+ verified local businesses",
+    "bullet_2": "Save favorites and track enquiries",
+    "bullet_3": "Get matched with trusted professionals"
   },
   "register": {
     "title": "Create Account",
+    "subtitle": "Customer Registration",
     "full_name": "Full Name",
     "email": "Email",
     "mobile": "Mobile Number",
@@ -135,10 +172,27 @@
     "register_btn": "Register Now",
     "registering": "Registering...",
     "have_account": "Already have an account?",
-    "login": "Login"
+    "login": "Login",
+    "want_business": "Want to register a business?",
+    "register_partner": "Register as Partner",
+    "passwords_no_match": "Passwords do not match",
+    "hero_title": "Join CityWala",
+    "hero_subtitle": "Create your account to start discovering trusted local businesses.",
+    "bullet_1": "Free to join, no hidden fees",
+    "bullet_2": "Personalized recommendations",
+    "bullet_3": "Save time finding verified experts"
   },
   "partner_register": {
     "title": "Partner Registration",
+    "login_title": "Partner Sign In",
+    "login_subtitle": "Access your partner dashboard",
+    "new_partner": "New partner?",
+    "register_here": "Register here",
+    "hero_title": "Grow with CityWala",
+    "hero_subtitle": "List your business and reach thousands of customers actively searching for your services.",
+    "bullet_1": "Get discovered by local customers",
+    "bullet_2": "Manage enquiries from one dashboard",
+    "bullet_3": "Choose a plan that fits your business",
     "full_name": "Full Name",
     "email": "Email",
     "mobile": "Mobile Number",
@@ -188,7 +242,7 @@
     "placeholder": "Enter email or mobile",
     "continue": "Continue",
     "sending": "Sending...",
-    "back_login": "← Back to Login"
+    "back_login": "Back to Login"
   },
   "footer": {
     "tagline": "Find global experts and services anytime, anywhere.",
@@ -223,6 +277,7 @@
     "login": "Login",
     "logout": "Logout",
     "email": "Email",
+    "email_address": "Email Address",
     "password": "Password",
     "forgot_password": "Forgot Password?",
     "reset_password": "Reset Password",
@@ -231,11 +286,38 @@
     "new_password": "New Password",
     "confirm_password": "Confirm Password",
     "update_password": "Update Password",
-    "updating": "Updating..."
+    "updating": "Updating...",
+    "passwords_no_match": "Passwords do not match",
+    "reset_success": "Password updated successfully. Redirecting to login…",
+    "reset_failed": "Reset failed"
   },
 
+  "admin_login": {
+    "title": "Admin Login",
+    "subtitle": "CityWala Admin Panel",
+    "email": "Admin Email",
+    "password": "Password",
+    "logging_in": "Logging in...",
+    "login_btn": "Admin Login",
+    "hero_title": "CityWala Console",
+    "hero_subtitle": "Manage categories, partners, plans, and platform-wide settings from one secure dashboard.",
+    "invalid_credentials": "Invalid admin credentials"
+  },
+
+  "auth_selection": {
+    "title": "Welcome to CityWala",
+    "subtitle": "Choose how you'd like to continue",
+    "customer_title": "Customer Login",
+    "customer_desc": "Find services & connect with partners",
+    "partner_title": "Partner Login",
+    "partner_desc": "Manage your business & reach customers",
+    "no_account": "Don't have an account?",
+    "create_customer_account": "Create Customer Account",
+    "register_partner": "Register as Partner"
+  },
 
   "plans": {
+    "choose_plan": "Choose your plan",
     "most_popular": "Most Popular",
     "per_month": "per month",
     "year": "Year",
@@ -270,13 +352,32 @@
     "verify_otp": "Verify OTP",
     "otp_sent_to": "OTP sent to",
     "enter_otp": "Enter OTP",
-    "verifying": "Verifying..."
+    "verifying": "Verifying...",
+    "otp_required": "Please enter the OTP",
+    "otp_invalid": "Invalid OTP. Please try again."
   },
 
   "partner_layout": {
     "mobile_title": "Partner",
     "menu": "Menu",
     "loading": "Loading dashboard..."
+  },
+
+  "user_dashboard": {
+    "welcome": "Welcome, {{name}}!",
+    "browse_matrimonial": "Browse Matrimonial",
+    "view_plans": "View Plans",
+    "logout": "Logout",
+    "quick_links": "Quick Links",
+    "matrimonial": "Matrimonial",
+    "categories": "Categories",
+    "plans": "Plans",
+    "be_partner": "Become a Partner",
+    "stats": {
+      "matrimonial_profiles": "Matrimonial Profiles",
+      "saved_profiles": "Saved Profiles",
+      "messages": "Messages"
+    }
   },
 
   "partner_dashboard": {
@@ -308,6 +409,9 @@
 
   "partner_profile": {
     "title": "Partner Profile",
+    "load_error_title": "Couldn't load your profile",
+    "load_error_description": "Something went wrong while loading your profile. Please try again.",
+    "retry": "Retry",
 
     "company_info": {
       "title": "Company Info",
@@ -357,6 +461,19 @@
     },
 
     "loading": "Loading profile..."
+  },
+
+  "payment_history": {
+    "title": "Payment History",
+    "subtitle": "All your transactions are shown below",
+    "transaction_id": "Transaction ID",
+    "plan": "Plan",
+    "amount": "Amount",
+    "status": "Status",
+    "method": "Method",
+    "date": "Date",
+    "empty_title": "No payments yet",
+    "empty_desc": "Your transaction history will show up here once you make a payment."
   },
 
   "my_plan": {

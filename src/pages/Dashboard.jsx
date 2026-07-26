@@ -1,70 +1,73 @@
 import { useTranslation } from "react-i18next";
 import { useAuth } from '../context/AuthContext'
 import { Link } from 'react-router-dom'
+import StatCard from '../components/ui/StatCard'
 
 export default function Dashboard() {
   const { t } = useTranslation();
   const { user, logout } = useAuth()
+
   return (
     <div className="container py-5">
-      <div className="row">
-        <div className="col-lg-3 mb-4">
-          <div className="card p-3 text-center">
-            <div style={{ width: 80, height: 80, borderRadius: '50%', background: '#1075be', margin: '0 auto 12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="fa-solid fa-user fa-2x text-white"></i>
+      <div className="row g-4">
+        <div className="col-lg-3">
+          <div className="cw-card text-center">
+            <div style={{ width: 80, height: 80, borderRadius: '50%', background: 'var(--cw-blue-600)', margin: '0 auto 12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ color: '#fff', fontSize: 28, fontWeight: 700 }}>
+                {user?.name?.charAt(0)?.toUpperCase() || '?'}
+              </span>
             </div>
-            <h5 className="fw-bold mb-0">{user?.name}</h5>
-            <p className="text-muted" style={{ fontSize: 13 }}>{user?.email || user?.mobile}</p>
+            <h2 className="h5 fw-bold mb-0">{user?.name}</h2>
+            <p className="text-body-secondary" style={{ fontSize: 13 }}>{user?.email || user?.mobile}</p>
             <hr />
             <div className="d-grid gap-2">
-              <Link to="/matrimonial" className="btn btn-outline-primary btn-sm">{t("browse_matrimonial")}</Link>
-              <Link to="/plan" className="btn btn-outline-success btn-sm">{t("view_plans")}</Link>
-              <button onClick={logout} className="btn btn-outline-danger btn-sm">{t("logout")}</button>
+              <Link to="/matrimonial" className="nav-btn outline">{t("user_dashboard.browse_matrimonial")}</Link>
+              <Link to="/plan" className="nav-btn outline">{t("user_dashboard.view_plans")}</Link>
+              <button onClick={logout} className="nav-btn ghost-danger">{t("user_dashboard.logout")}</button>
             </div>
           </div>
         </div>
+
         <div className="col-lg-9">
-          <h3 className="fw-bold mb-4">Welcome, {user?.name}! 👋</h3>
+          <h1 className="h3 fw-bold mb-4">{t("user_dashboard.welcome", { name: user?.name })}</h1>
+
           <div className="row g-3 mb-4">
             {[
-              { label: 'Matrimonial Profiles', val: 0, icon: 'fa-heart', color: '#1075be' },
-              { label: 'Saved Profiles', val: 0, icon: 'fa-bookmark', color: '#f46f26' },
-              { label: 'Messages', val: 0, icon: 'fa-envelope', color: '#f59e0b' },
+              { label: t("user_dashboard.stats.matrimonial_profiles"), val: 0, icon: 'fa-heart', tint: 'blue' },
+              { label: t("user_dashboard.stats.saved_profiles"), val: 0, icon: 'fa-bookmark', tint: 'orange' },
+              { label: t("user_dashboard.stats.messages"), val: 0, icon: 'fa-envelope', tint: 'warning' },
             ].map(s => (
               <div key={s.label} className="col-md-4">
-                <div className="card p-3 text-center">
-                  <i className={`fa-solid ${s.icon} fa-2x mb-2`} style={{ color: s.color }}></i>
-                  <h4 className="fw-bold mb-0">{s.val}</h4>
-                  <p className="text-muted mb-0" style={{ fontSize: 13 }}>{s.label}</p>
-                </div>
+                <StatCard icon={s.icon} tint={s.tint} value={s.val} label={s.label} />
               </div>
             ))}
           </div>
-          <div className="card p-4">
-            <h5 className="fw-bold mb-3">{t("quick_links")}</h5>
-            <div className="row g-2">
+
+          <div className="cw-card">
+            <h2 className="h5 fw-bold mb-3">{t("user_dashboard.quick_links")}</h2>
+            <div className="row g-3">
               <div className="col-6 col-md-3">
-                <Link to="/matrimonial" className="btn btn-light w-100 d-flex flex-column align-items-center py-3">
-                  <i className="fa-solid fa-heart fa-lg mb-2" style={{ color: '#1075be' }}></i>
-                  <span style={{ fontSize: 12 }}>{t("matrimonial")}</span>
+                <Link to="/matrimonial" className="cw-quick-link">
+                  <i className="fa-solid fa-heart" style={{ color: 'var(--cw-blue-600)' }} aria-hidden="true"></i>
+                  {t("user_dashboard.matrimonial")}
                 </Link>
               </div>
               <div className="col-6 col-md-3">
-                <Link to="/categories" className="btn btn-light w-100 d-flex flex-column align-items-center py-3">
-                  <i className="fa-solid fa-th-large fa-lg mb-2" style={{ color: '#f46f26' }}></i>
-                  <span style={{ fontSize: 12 }}>{t("categories")}</span>
+                <Link to="/categories" className="cw-quick-link">
+                  <i className="fa-solid fa-th-large" style={{ color: 'var(--cw-orange-500)' }} aria-hidden="true"></i>
+                  {t("user_dashboard.categories")}
                 </Link>
               </div>
               <div className="col-6 col-md-3">
-                <Link to="/plan" className="btn btn-light w-100 d-flex flex-column align-items-center py-3">
-                  <i className="fa-solid fa-crown fa-lg mb-2" style={{ color: '#f59e0b' }}></i>
-                  <span style={{ fontSize: 12 }}>{t("plans")}</span>
+                <Link to="/plan" className="cw-quick-link">
+                  <i className="fa-solid fa-crown" style={{ color: 'var(--cw-warning)' }} aria-hidden="true"></i>
+                  {t("user_dashboard.plans")}
                 </Link>
               </div>
               <div className="col-6 col-md-3">
-                <Link to="/partner/register" className="btn btn-light w-100 d-flex flex-column align-items-center py-3">
-                  <i className="fa-solid fa-handshake fa-lg mb-2" style={{ color: '#10b981' }}></i>
-                  <span style={{ fontSize: 12 }}>{t("be_partner")}</span>
+                <Link to="/partner/register" className="cw-quick-link">
+                  <i className="fa-solid fa-handshake" style={{ color: 'var(--cw-success)' }} aria-hidden="true"></i>
+                  {t("user_dashboard.be_partner")}
                 </Link>
               </div>
             </div>

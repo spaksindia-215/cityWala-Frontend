@@ -1,12 +1,13 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-// import { useAuth } from '../../context/AuthContext'
 import { useAuth } from '../../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 import API from '../../api/axios'
 import { useParams } from 'react-router-dom';
 import AdminLayout from './AdminLayout';
 import Pagination from '../../components/Pagination';
 import { getYoutubeThumbnail } from '../../utils/youtube';
+import AuthCard from '../../components/ui/AuthCard';
 
 
 // ─── Sidebar ──────────────────────────────────────────────────────────────────
@@ -50,6 +51,7 @@ export { default as AdminSidebar } from './AdminSidebar';
 export function AdminLogin() {
   const { adminLogin } = useAuth()
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const [form, setForm] = useState({ email: '', password: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -61,55 +63,47 @@ export function AdminLogin() {
       await adminLogin(form.email, form.password)
       navigate('/admin/dashboard')
     } catch (err) {
-      setError(err.response?.data?.message || 'Invalid admin credentials')
+      setError(err.response?.data?.message || t('admin_login.invalid_credentials'))
     } finally { setLoading(false) }
   }
 
   return (
-    <div className="auth-wrapper d-flex align-items-center justify-content-center" style={{ background: '#1a1a2e', minHeight: '100vh' }}>
-      <div className="container">
-        <div className="row justify-content-center">
-          <div className="col-12 col-sm-9 col-md-6 col-lg-4">
-            <div className="card auth-card p-4 p-md-5 mx-auto">
-              <div className="text-center mb-4">
-                <i className="fa-solid fa-shield fa-3x mb-3" style={{ color: '#1075be' }}></i>
-                <h4 className="fw-bold">Admin Login</h4>
-                <p className="text-muted" style={{ fontSize: 13 }}>CityWala Admin Panel</p>
-              </div>
-              {error && <div className="alert alert-danger py-2 text-center">{error}</div>}
-              <form onSubmit={handleSubmit}>
-                <div className="form-floating mb-3">
-                  <input type="email" className="form-control" id="email" placeholder="Email"
-                    value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required
-                    autoComplete="username" />
-                  <label htmlFor="email">Admin Email</label>
-                </div>
-                <div className="form-floating mb-4 position-relative">
-                  <input type={showPassword ? 'text' : 'password'} className="form-control pe-5" id="password" placeholder="Password"
-                    value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} required
-                    autoComplete="current-password" />
-                  <label htmlFor="password">Password</label>
-                  <button
-                    type="button"
-                    className="btn password-toggle-btn position-absolute top-50 end-0 translate-middle-y me-2 p-0 border-0 bg-transparent text-muted"
-                    style={{ zIndex: 5, width: 32, height: 32 }}
-                    onClick={() => setShowPassword(prev => !prev)}
-                    aria-label={showPassword ? 'Hide password' : 'Show password'}
-                    aria-pressed={showPassword}
-                    tabIndex={-1}
-                  >
-                    <i className={`fa-solid ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}></i>
-                  </button>
-                </div>
-                <button className="btn btn-primary w-100 py-2" disabled={loading}>
-                  {loading ? 'Logging in...' : 'Admin Login'}
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
+    <AuthCard variant="admin" title={t('admin_login.hero_title')} subtitle={t('admin_login.hero_subtitle')}>
+      <div className="text-center mb-4">
+        <i className="fa-solid fa-shield fa-3x mb-3" style={{ color: 'var(--cw-blue-600)' }} aria-hidden="true"></i>
+        <h2 className="h4 fw-bold">{t('admin_login.title')}</h2>
+        <p className="text-body-secondary" style={{ fontSize: 13 }}>{t('admin_login.subtitle')}</p>
       </div>
-    </div>
+      {error && <div className="alert alert-danger py-2 text-center">{error}</div>}
+      <form onSubmit={handleSubmit}>
+        <div className="form-floating mb-3">
+          <input type="email" className="form-control" id="email" placeholder={t('admin_login.email')}
+            value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required
+            autoComplete="username" />
+          <label htmlFor="email">{t('admin_login.email')}</label>
+        </div>
+        <div className="form-floating mb-4 position-relative">
+          <input type={showPassword ? 'text' : 'password'} className="form-control pe-5" id="password" placeholder={t('admin_login.password')}
+            value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} required
+            autoComplete="current-password" />
+          <label htmlFor="password">{t('admin_login.password')}</label>
+          <button
+            type="button"
+            className="btn password-toggle-btn position-absolute top-50 end-0 translate-middle-y me-2 p-0 border-0 bg-transparent text-body-secondary"
+            style={{ zIndex: 5, width: 32, height: 32 }}
+            onClick={() => setShowPassword(prev => !prev)}
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
+            aria-pressed={showPassword}
+            tabIndex={-1}
+          >
+            <i className={`fa-solid ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`} aria-hidden="true"></i>
+          </button>
+        </div>
+        <button className="nav-btn primary w-100" style={{ height: 48 }} disabled={loading}>
+          {loading ? t('admin_login.logging_in') : t('admin_login.login_btn')}
+        </button>
+      </form>
+    </AuthCard>
   )
 }
 
@@ -156,7 +150,7 @@ export function AdminUsers() {
 
     <>
       <AdminLayout active="/admin/users" >
-        <div className="container-fluid py-4">
+        <>
 
           {/* HEADER */}
           <div className="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
@@ -341,6 +335,7 @@ export function AdminUsers() {
                             <i
                               className="fa-regular fa-folder-open mb-3"
                               style={{ fontSize: 42 }}
+                              aria-hidden="true"
                             ></i>
 
                             <p className="mb-0">
@@ -357,15 +352,15 @@ export function AdminUsers() {
               </div>
             )}
           </div>
-        </div>
-        <Pagination
-          page={page}
-          totalPages={pagination?.totalPages || 1}
-          onPageChange={setPage}
-          limit={limit}
-          setLimit={setLimit}
-          setPage={setPage}
-        />
+          <Pagination
+            page={page}
+            totalPages={pagination?.totalPages || 1}
+            onPageChange={setPage}
+            limit={limit}
+            setLimit={setLimit}
+            setPage={setPage}
+          />
+        </>
 
       </AdminLayout>
     </>
@@ -828,10 +823,10 @@ export function AdminCategories() {
         <div className="row g-0">
           {/* <AdminSidebar active="/admin/categories/add" /> */}
           <div className="d-flex justify-content-center w-100">
-            <div className="col-lg-12 ">
+            <div className="col-lg-8 col-xl-7">
               <div className="row g-4">
                 {/* FORM */}
-                <div className="col-lg-5">
+                <div className="col-12">
                   <div
                     className="card border-0 shadow-lg"
                     style={{
@@ -853,6 +848,7 @@ export function AdminCategories() {
                         className="fw-bold mb-1"
                         style={{
                           letterSpacing: "0.5px",
+                          color: "#fff",
                         }}
                       >
                         {isEdit
@@ -865,6 +861,7 @@ export function AdminCategories() {
                         style={{
                           opacity: 0.8,
                           fontSize: "14px",
+                          color: "#fff",
                         }}
                       >
                         Manage category details &

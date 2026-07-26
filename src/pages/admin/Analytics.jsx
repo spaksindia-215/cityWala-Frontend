@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { AdminSidebar } from "./AdminLogin";
+import { useCallback, useEffect, useState } from "react";
 import API from "../../api/axios";
 
 import {
@@ -14,6 +13,7 @@ import {
 
 import { Bar } from "react-chartjs-2";
 import AdminLayout from "./AdminLayout";
+import DashboardPageHeader from "../../components/ui/DashboardPageHeader";
 
 ChartJS.register(
     CategoryScale,
@@ -24,14 +24,14 @@ ChartJS.register(
     Legend
 );
 
-
 const chartOptions = {
     responsive: true,
     plugins: {
-        legend: { position: "top" },
+        legend: { position: "top", labels: { font: { family: "Lato" } } },
     },
     scales: {
-        y: { beginAtZero: true },
+        y: { beginAtZero: true, grid: { color: "#e2e8f0" }, ticks: { font: { family: "Lato" } } },
+        x: { grid: { color: "#e2e8f0" }, ticks: { font: { family: "Lato" } } },
     },
 };
 
@@ -61,7 +61,6 @@ const Analytics = () => {
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
 
-    const [categories, setCategories] = useState([])
     const [search, setSearch] = useState({
         country: "",
         state: "",
@@ -100,7 +99,6 @@ const Analytics = () => {
             setStateAnalytics(data.stateAnalytics || []);
             setCityAnalytics(data.cityAnalytics || []);
             setCategoryAnalytics(data.categoryAnalytics || []);
-            console.log(data)
         } catch (err) {
             console.error(err);
             setError(err.response?.data?.message || "Failed to load analytics");
@@ -190,7 +188,7 @@ const Analytics = () => {
                 data: countries.map((c) =>
                     matchRevenue(c.name, c._id, countryRev, countryAnalytics, "country", "countryId")
                 ),
-                backgroundColor: "#3b82f6",
+                backgroundColor: "#1075be",
                 borderRadius: 8,
             },
         ],
@@ -204,7 +202,7 @@ const Analytics = () => {
                 data: states.map((s) =>
                     matchRevenue(s.name, s._id, stateRev, stateAnalytics, "state", "stateId")
                 ),
-                backgroundColor: "#10b981",
+                backgroundColor: "#12805c",
                 borderRadius: 8,
             },
         ],
@@ -218,7 +216,7 @@ const Analytics = () => {
                 data: cities.map((c) =>
                     matchRevenue(c.name, c._id, cityRev, cityAnalytics, "city", "cityId")
                 ),
-                backgroundColor: "#f59e0b",
+                backgroundColor: "#f46f26",
                 borderRadius: 8,
             },
         ],
@@ -234,29 +232,12 @@ const Analytics = () => {
             {
                 label: "Revenue (₹)",
                 data: categoryAnalytics.map((c) => Number(c.total) || 0),
-                backgroundColor: "#8b5cf6",
+                backgroundColor: "#7c3aed",
                 borderRadius: 8,
             },
         ],
     };
     const hasCategoryRevenue = categoryAnalytics.length > 0;
-
-
-    //     const categoryChart = {
-    //   labels: categoryAnalyticsData.map((c) => c.category),
-
-    //   datasets: [
-    //     {
-    //       label: "Category Revenue",
-
-    //       data: categoryAnalyticsData.map((c) => c.total),
-
-    //       backgroundColor: "#8b5cf6",
-
-    //       borderRadius: 8,
-    //     },
-    //   ],
-    // };
 
     const [expandedSections, setExpandedSections] = useState({
         country: false,
@@ -282,330 +263,218 @@ const Analytics = () => {
     const visibleCategories = getVisibleData(categoryAnalytics, "category");
 
     return (
-        // <div style={{ minHeight: "100vh", background: "#f5f5f5" }}>
-        <>
-            <AdminLayout active="/admin/analytics"  >
-                <div className="row g-0">
-                    {/* <AdminSidebar active="/admin/analytics" /> */}
+        <AdminLayout>
+            <DashboardPageHeader title="Revenue Analytics" />
+            <p className="text-body-secondary mb-4">Country → State → City — paid plan payments</p>
 
-                    <div className="col-lg-12">
-                        <div className="mb-4">
-                            <h3 className="fw-bold">Revenue Analytics</h3>
-                            <div style={{ color: "#6b7280" }}>
-                                Country → State → City — paid plan payments
-                            </div>
-                        </div>
+            {error && <div className="alert alert-danger py-2">{error}</div>}
 
-                        {error && (
-                            <div className="alert alert-danger py-2">{error}</div>
-                        )}
-
-                        <div className="row g-3 mb-4">
-                            <div className="col-md-3">
-                                <div className="card border-0 shadow-sm p-3" style={{ borderRadius: 14 }}>
-                                    <div className="text-muted small">Total revenue</div>
-                                    <div className="fw-bold fs-4">₹{summary.totalRevenue.toLocaleString("en-IN")}</div>
-                                </div>
-                            </div>
-                            <div className="col-md-3">
-                                <div className="card border-0 shadow-sm p-3" style={{ borderRadius: 14 }}>
-                                    <div className="text-muted small">Today</div>
-                                    <div className="fw-bold fs-4">₹{summary.todayRevenue.toLocaleString("en-IN")}</div>
-                                </div>
-                            </div>
-                            <div className="col-md-3">
-                                <div className="card border-0 shadow-sm p-3" style={{ borderRadius: 14 }}>
-                                    <div className="text-muted small">This month</div>
-                                    <div className="fw-bold fs-4">₹{summary.monthlyRevenue.toLocaleString("en-IN")}</div>
-                                </div>
-                            </div>
-                            <div className="col-md-3">
-                                <div className="card border-0 shadow-sm p-3" style={{ borderRadius: 14 }}>
-                                    <div className="text-muted small">Pending orders</div>
-                                    <div className="fw-bold fs-4">{summary.pendingRevenue}</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="card border-0 shadow-sm mb-4" style={{ borderRadius: 18 }}>
-                            <div className="card-body">
-                                <div className="row g-3">
-                                    <div className="col-md-6">
-                                        <label className="fw-semibold mb-2">Select country</label>
-                                        <select
-                                            className="form-select"
-                                            value={search.country}
-                                            onChange={(e) => handleCountryChange(e.target.value)}
-                                            style={{ height: 52, borderRadius: 12 }}
-                                        >
-                                            <option value="">All countries (overview)</option>
-                                            {countries.map((c) => (
-                                                <option key={c._id} value={c._id}>
-                                                    {c.name}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
-
-                                    <div className="col-md-6">
-                                        <label className="fw-semibold mb-2">Select state</label>
-                                        <select
-                                            className="form-select"
-                                            value={search.state}
-                                            disabled={!search.country}
-                                            onChange={(e) => handleStateChange(e.target.value)}
-                                            style={{ height: 52, borderRadius: 12 }}
-                                        >
-                                            <option value="">Choose state</option>
-                                            {states.map((s) => (
-                                                <option key={s._id} value={s._id}>
-                                                    {s.name}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {loading && (
-                            <div className="text-center py-5">
-                                <div className="spinner-border text-primary" />
-                            </div>
-                        )}
-
-                        {!loading && countryAnalytics.length > 0 && (
-                            <div className="card shadow-sm mb-4" style={{ borderRadius: 18 }}>
-                                <div className="card-body">
-                                    <div className="d-flex justify-content-between align-items-center mb-3">
-                                        <h5 className="mb-0">
-                                            Revenue by country (from payments)
-                                        </h5>
-
-                                        <button
-                                            className="btn btn-sm btn-outline-primary"
-                                            onClick={() => toggleSection("country")}
-                                        >
-                                            {expandedSections.country ? "Show Less" : "View All"}
-                                        </button>
-                                    </div>
-                                    <div className="table-responsive mb-3">
-                                        <table className="table table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>Country</th>
-                                                    <th>Revenue</th>
-                                                    <th>Payments</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {visibleCountries.map((row, i) => (
-                                                    <tr key={i}>
-                                                        <td>{row.country || "—"}</td>
-                                                        <td>₹{Number(row.total || 0).toLocaleString("en-IN")}</td>
-                                                        <td>{row.count || 0}</td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {!loading && countries.length > 0 && (
-                            <div className="card shadow-sm mb-4" style={{ borderRadius: 18 }}>
-                                <div className="card-body">
-                                    <h5>Country revenue chart</h5>
-                                    {!hasCountryRevenue && (
-                                        <p className="text-muted small">
-                                            No paid payments with location yet. Partner profile must have country/state/city and payment must complete as paid.
-                                        </p>
-                                    )}
-                                    <Bar data={countryChart} options={chartOptions} />
-                                </div>
-                            </div>
-                        )}
-
-                        {!loading && search.country && states.length > 0 && (
-                            <div className="card shadow-sm mb-4" style={{ borderRadius: 18 }}>
-                                <div className="card-body">
-                                    {/* <h5>State revenue chart</h5> */}
-                                    <div className="d-flex justify-content-between align-items-center mb-3">
-                                        <h5 className="mb-0">
-                                            State revenue chart
-                                        </h5>
-
-                                        <button
-                                            className="btn btn-sm btn-outline-primary"
-                                            onClick={() => toggleSection("state")}
-                                        >
-                                            {expandedSections.state ? "Show Less" : "View All"}
-                                        </button>
-                                    </div>
-
-                                    {stateAnalytics.length > 0 && (
-                                        <div className="table-responsive mb-3">
-                                            <table className="table table-sm">
-                                                <thead>
-                                                    <tr>
-                                                        <th>State</th>
-                                                        <th>Revenue</th>
-                                                        <th>Payments</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {visibleStates.map((row, i) => (
-                                                        <tr key={i}>
-                                                            <td>{row.state || "—"}</td>
-                                                            <td>₹{Number(row.total || 0).toLocaleString("en-IN")}</td>
-                                                            <td>{row.count || 0}</td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    )}
-                                    {!hasStateRevenue && (
-                                        <p className="text-muted small">No paid payments for this country yet.</p>
-                                    )}
-                                    <Bar data={stateChart} options={chartOptions} />
-                                </div>
-                            </div>
-                        )}
-
-                        {!loading && search.state && cities.length > 0 && (
-                            <div className="card shadow-sm" style={{ borderRadius: 18 }}>
-                                <div className="card-body">
-                                    {/* <h5>City revenue chart</h5> */}
-                                    <div className="d-flex justify-content-between align-items-center mb-3">
-                                        <h5 className="mb-0">
-                                            City revenue chart
-                                        </h5>
-
-                                        <button
-                                            className="btn btn-sm btn-outline-primary"
-                                            onClick={() => toggleSection("city")}
-                                        >
-                                            {expandedSections.city ? "Show Less" : "View All"}
-                                        </button>
-                                    </div>
-                                    {cityAnalytics.length > 0 && (
-                                        <div className="table-responsive mb-3">
-                                            <table className="table table-sm">
-                                                <thead>
-                                                    <tr>
-                                                        <th>City</th>
-                                                        <th>Revenue</th>
-                                                        <th>Payments</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {visibleCities.map((row, i) => (
-                                                        <tr key={i}>
-                                                            <td>{row.city || "—"}</td>
-                                                            <td>₹{Number(row.total || 0).toLocaleString("en-IN")}</td>
-                                                            <td>{row.count || 0}</td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    )}
-                                    {!hasCityRevenue && (
-                                        <p className="text-muted small">No paid payments for this state yet.</p>
-                                    )}
-                                    <Bar data={cityChart} options={chartOptions} />
-                                </div>
-                            </div>
-                        )}
-
-
-                        <div className="card shadow-sm my-4" style={{ borderRadius: 18 }}>
-                            <div className="card-body">
-                                {/* <h5 className="mb-3">Revenue by category</h5> */}
-                                <div className="d-flex justify-content-between align-items-center mb-3">
-                                    <h5 className="mb-0">
-                                        Revenue by category
-                                    </h5>
-
-                                    <button
-                                        className="btn btn-sm btn-outline-primary"
-                                        onClick={() => toggleSection("category")}
-                                    >
-                                        {expandedSections.category ? "Show Less" : "View All"}
-                                    </button>
-                                </div>
-                                {hasCategoryRevenue ? (
-                                    <>
-                                        <div className="table-responsive mb-3">
-                                            <table className="table table-sm">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Category</th>
-                                                        <th>Revenue</th>
-                                                        <th>Payments</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {visibleCategories.map((row, i) => (
-                                                        <tr key={i}>
-                                                            <td>{row.category || "—"}</td>
-                                                            <td>₹{Number(row.total || 0).toLocaleString("en-IN")}</td>
-                                                            <td>{row.count || 0}</td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <Bar data={categoryChart} options={chartOptions} />
-                                    </>
-                                ) : (
-                                    <p className="text-muted small">
-                                        No paid payments with category data yet. Ensure partner profiles have a category assigned and payments are completed.
-                                    </p>
-                                )}
-                            </div>
-                        </div>
-
-                        {/* category wise (old recharts code — kept for reference) */}
-                        {/* {data.length > 0 && (
-                <div className="d-flex justify-content-center mt-4">
-
-                  <PieChart width={400} height={300}>
-
-                    <Pie
-                      data={data}
-                      dataKey="value"
-                      nameKey="name"
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={100}
-                      label
-                    >
-
-                      {data.map((entry, index) => (
-                        <Cell
-                          key={index}
-                          fill={COLORS[index % COLORS.length]}
-                        />
-                      ))}
-
-                    </Pie>
-
-                    <Tooltip />
-                    <Legend />
-
-                  </PieChart>
-
+            <div className="row g-3 mb-4">
+                <div className="col-md-3">
+                    <div className="cw-meta-tile">
+                        <div className="cw-overline mb-1">Total revenue</div>
+                        <div className="fw-bold fs-4">₹{summary.totalRevenue.toLocaleString("en-IN")}</div>
+                    </div>
                 </div>
-              )}  */}
+                <div className="col-md-3">
+                    <div className="cw-meta-tile">
+                        <div className="cw-overline mb-1">Today</div>
+                        <div className="fw-bold fs-4">₹{summary.todayRevenue.toLocaleString("en-IN")}</div>
+                    </div>
+                </div>
+                <div className="col-md-3">
+                    <div className="cw-meta-tile">
+                        <div className="cw-overline mb-1">This month</div>
+                        <div className="fw-bold fs-4">₹{summary.monthlyRevenue.toLocaleString("en-IN")}</div>
+                    </div>
+                </div>
+                <div className="col-md-3">
+                    <div className="cw-meta-tile">
+                        <div className="cw-overline mb-1">Pending orders</div>
+                        <div className="fw-bold fs-4">{summary.pendingRevenue}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="cw-card mb-4">
+                <div className="row g-3">
+                    <div className="col-md-6">
+                        <label className="form-label small fw-semibold mb-2">Select country</label>
+                        <select
+                            className="form-select"
+                            value={search.country}
+                            onChange={(e) => handleCountryChange(e.target.value)}
+                        >
+                            <option value="">All countries (overview)</option>
+                            {countries.map((c) => (
+                                <option key={c._id} value={c._id}>{c.name}</option>
+                            ))}
+                        </select>
                     </div>
 
+                    <div className="col-md-6">
+                        <label className="form-label small fw-semibold mb-2">Select state</label>
+                        <select
+                            className="form-select"
+                            value={search.state}
+                            disabled={!search.country}
+                            onChange={(e) => handleStateChange(e.target.value)}
+                        >
+                            <option value="">Choose state</option>
+                            {states.map((s) => (
+                                <option key={s._id} value={s._id}>{s.name}</option>
+                            ))}
+                        </select>
+                    </div>
                 </div>
-            </AdminLayout>
-        </>
-        // </div>
+            </div>
+
+            {loading && (
+                <div className="text-center py-5">
+                    <div className="spinner-border text-primary" />
+                </div>
+            )}
+
+            {!loading && countryAnalytics.length > 0 && (
+                <div className="cw-card mb-4">
+                    <div className="d-flex justify-content-between align-items-center mb-3">
+                        <h2 className="h6 mb-0">Revenue by country (from payments)</h2>
+                        <button className="nav-btn outline" style={{ height: 32, fontSize: 12 }} onClick={() => toggleSection("country")}>
+                            {expandedSections.country ? "Show Less" : "View All"}
+                        </button>
+                    </div>
+                    <div className="table-responsive mb-3">
+                        <table className="table cw-table">
+                            <thead>
+                                <tr><th>Country</th><th>Revenue</th><th>Payments</th></tr>
+                            </thead>
+                            <tbody>
+                                {visibleCountries.map((row, i) => (
+                                    <tr key={i}>
+                                        <td>{row.country || "—"}</td>
+                                        <td>₹{Number(row.total || 0).toLocaleString("en-IN")}</td>
+                                        <td>{row.count || 0}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            )}
+
+            {!loading && countries.length > 0 && (
+                <div className="cw-card mb-4">
+                    <h2 className="h6 mb-3">Country revenue chart</h2>
+                    {!hasCountryRevenue && (
+                        <p className="text-body-secondary small">
+                            No paid payments with location yet. Partner profile must have country/state/city and payment must complete as paid.
+                        </p>
+                    )}
+                    <Bar data={countryChart} options={chartOptions} />
+                </div>
+            )}
+
+            {!loading && search.country && states.length > 0 && (
+                <div className="cw-card mb-4">
+                    <div className="d-flex justify-content-between align-items-center mb-3">
+                        <h2 className="h6 mb-0">State revenue chart</h2>
+                        <button className="nav-btn outline" style={{ height: 32, fontSize: 12 }} onClick={() => toggleSection("state")}>
+                            {expandedSections.state ? "Show Less" : "View All"}
+                        </button>
+                    </div>
+
+                    {stateAnalytics.length > 0 && (
+                        <div className="table-responsive mb-3">
+                            <table className="table cw-table">
+                                <thead>
+                                    <tr><th>State</th><th>Revenue</th><th>Payments</th></tr>
+                                </thead>
+                                <tbody>
+                                    {visibleStates.map((row, i) => (
+                                        <tr key={i}>
+                                            <td>{row.state || "—"}</td>
+                                            <td>₹{Number(row.total || 0).toLocaleString("en-IN")}</td>
+                                            <td>{row.count || 0}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                    {!hasStateRevenue && (
+                        <p className="text-body-secondary small">No paid payments for this country yet.</p>
+                    )}
+                    <Bar data={stateChart} options={chartOptions} />
+                </div>
+            )}
+
+            {!loading && search.state && cities.length > 0 && (
+                <div className="cw-card mb-4">
+                    <div className="d-flex justify-content-between align-items-center mb-3">
+                        <h2 className="h6 mb-0">City revenue chart</h2>
+                        <button className="nav-btn outline" style={{ height: 32, fontSize: 12 }} onClick={() => toggleSection("city")}>
+                            {expandedSections.city ? "Show Less" : "View All"}
+                        </button>
+                    </div>
+                    {cityAnalytics.length > 0 && (
+                        <div className="table-responsive mb-3">
+                            <table className="table cw-table">
+                                <thead>
+                                    <tr><th>City</th><th>Revenue</th><th>Payments</th></tr>
+                                </thead>
+                                <tbody>
+                                    {visibleCities.map((row, i) => (
+                                        <tr key={i}>
+                                            <td>{row.city || "—"}</td>
+                                            <td>₹{Number(row.total || 0).toLocaleString("en-IN")}</td>
+                                            <td>{row.count || 0}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                    {!hasCityRevenue && (
+                        <p className="text-body-secondary small">No paid payments for this state yet.</p>
+                    )}
+                    <Bar data={cityChart} options={chartOptions} />
+                </div>
+            )}
+
+            <div className="cw-card mb-4">
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                    <h2 className="h6 mb-0">Revenue by category</h2>
+                    <button className="nav-btn outline" style={{ height: 32, fontSize: 12 }} onClick={() => toggleSection("category")}>
+                        {expandedSections.category ? "Show Less" : "View All"}
+                    </button>
+                </div>
+                {hasCategoryRevenue ? (
+                    <>
+                        <div className="table-responsive mb-3">
+                            <table className="table cw-table">
+                                <thead>
+                                    <tr><th>Category</th><th>Revenue</th><th>Payments</th></tr>
+                                </thead>
+                                <tbody>
+                                    {visibleCategories.map((row, i) => (
+                                        <tr key={i}>
+                                            <td>{row.category || "—"}</td>
+                                            <td>₹{Number(row.total || 0).toLocaleString("en-IN")}</td>
+                                            <td>{row.count || 0}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                        <Bar data={categoryChart} options={chartOptions} />
+                    </>
+                ) : (
+                    <p className="text-body-secondary small">
+                        No paid payments with category data yet. Ensure partner profiles have a category assigned and payments are completed.
+                    </p>
+                )}
+            </div>
+        </AdminLayout>
     );
 };
 
