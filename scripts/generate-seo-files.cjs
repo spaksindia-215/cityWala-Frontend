@@ -68,6 +68,18 @@ async function fetchPartners() {
   }
 }
 
+async function fetchBlogs() {
+  try {
+    const res = await axios.get(`${API_URL}/blogs/sitemap/list`, { timeout: 15000 });
+    return res.data?.blogs || [];
+  } catch (err) {
+    console.warn(
+      `[generate-seo-files] Could not fetch blogs from ${API_URL}/blogs/sitemap/list (${err.message}). Sitemap will not include blog pages.`
+    );
+    return [];
+  }
+}
+
 /** Builds the full slug path (parent/child/grandchild) for every category. */
 function buildCategoryPaths(categories) {
   const byId = new Map(categories.map((c) => [String(c._id), c]));
@@ -88,11 +100,16 @@ function buildCategoryPaths(categories) {
 }
 
 async function generateSitemap() {
-  const [categories, partners] = await Promise.all([fetchCategories(), fetchPartners()]);
+  const [categories, partners, blogs] = await Promise.all([
+    fetchCategories(),
+    fetchPartners(),
+    fetchBlogs(),
+  ]);
   const categoriesWithPaths = buildCategoryPaths(categories);
 
   const urls = [
     ...STATIC_PAGES.map(urlEntry),
+    urlEntry({ loc: "/blogs", changefreq: "daily", priority: "0.9" }),
     ...categoriesWithPaths.map((cat) =>
       urlEntry({
         loc: `/categories/${cat.fullPath}`,
@@ -113,6 +130,14 @@ async function generateSitemap() {
           : undefined,
       })
     ),
+    ...blogs.map((blog) =>
+      urlEntry({
+        loc: `/blogs/${blog.slug}`,
+        changefreq: "weekly",
+        priority: "0.7",
+        lastmod: blog.updatedAt ? new Date(blog.updatedAt).toISOString().split("T")[0] : undefined,
+      })
+    ),
   ];
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -124,7 +149,7 @@ ${urls.join("\n")}
   const outPath = path.resolve(__dirname, "../public/sitemap.xml");
   await fs.writeFile(outPath, xml, "utf8");
   console.log(
-    `[generate-seo-files] Wrote sitemap.xml with ${STATIC_PAGES.length} static pages, ${categoriesWithPaths.length} categories, ${partners.length} business pages.`
+    `[generate-seo-files] Wrote sitemap.xml with ${STATIC_PAGES.length} static pages, ${categoriesWithPaths.length} categories, ${partners.length} business pages, ${blogs.length} blog pages.`
   );
 }
 

@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import PhoneInput from 'react-phone-input-2'
@@ -78,11 +78,15 @@ export function PartnerLogin() {
   )
 }
 
+const MIN_GALLERY_PHOTOS = 5;
+const MAX_GALLERY_PHOTOS = 5;
+
 export function PartnerRegister() {
   const { partnerRegister } = useAuth();
   const navigate = useNavigate();
 
   const [step, setStep] = useState(1);
+  const [galleryPhotos, setGalleryPhotos] = useState([]);
 
   const [form, setForm] = useState({
     name: "",
@@ -109,6 +113,7 @@ export function PartnerRegister() {
     company_url: ""
   });
 
+  const galleryInputRef = useRef(null);
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
@@ -279,12 +284,38 @@ export function PartnerRegister() {
     }));
   };
 
+  const remainingGallerySlots = MAX_GALLERY_PHOTOS - galleryPhotos.length;
+
+  const handleGalleryFilesSelected = (e) => {
+    const files = Array.from(e.target.files || []);
+    e.target.value = "";
+    if (!files.length) return;
+
+    const allowed = files.slice(0, remainingGallerySlots);
+    setGalleryPhotos((prev) => [
+      ...prev,
+      ...allowed.map((file) => ({ file, previewUrl: URL.createObjectURL(file) })),
+    ]);
+  };
+
+  const handleRemoveGalleryPhoto = (previewUrl) => {
+    setGalleryPhotos((prev) => {
+      const target = prev.find((p) => p.previewUrl === previewUrl);
+      if (target) URL.revokeObjectURL(target.previewUrl);
+      return prev.filter((p) => p.previewUrl !== previewUrl);
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
     if (form.password !== form.confirmPassword) {
       return setError("Passwords do not match");
+    }
+
+    if (galleryPhotos.length < MIN_GALLERY_PHOTOS) {
+      return setError(t("partner_register.gallery_min_error", { min: MIN_GALLERY_PHOTOS }));
     }
 
     setLoading(true);
@@ -297,6 +328,8 @@ export function PartnerRegister() {
           data.append(key, form[key]);
         }
       });
+
+      galleryPhotos.forEach(({ file }) => data.append("photos", file));
 
       const res = await partnerRegister(data);
       navigate("/verify-email-pending", { state: { email: res?.email || form.email } });
@@ -677,6 +710,55 @@ export function PartnerRegister() {
                         onChange={handleChange}
                       />
                     </div>
+
+                    <div className="col-12">
+                      <label className="form-label fw-semibold">
+                        {t("partner_register.gallery_label", { min: MIN_GALLERY_PHOTOS })}
+                      </label>
+                      <p className="text-body-secondary small mb-2">
+                        {t("partner_register.gallery_help", { min: MIN_GALLERY_PHOTOS, max: MAX_GALLERY_PHOTOS })}
+                      </p>
+
+                      <div className="cw-gallery-grid">
+                        {galleryPhotos.map(({ previewUrl }) => (
+                          <div className="cw-gallery-tile" key={previewUrl}>
+                            <img src={previewUrl} alt="" aria-hidden="true" />
+                            <button
+                              type="button"
+                              className="cw-gallery-tile__remove"
+                              onClick={() => handleRemoveGalleryPhoto(previewUrl)}
+                              aria-label={t("partner_profile.gallery.remove")}
+                            >
+                              <i className="fa-solid fa-xmark" aria-hidden="true"></i>
+                            </button>
+                          </div>
+                        ))}
+
+                        {remainingGallerySlots > 0 && (
+                          <button
+                            type="button"
+                            className="cw-gallery-tile cw-gallery-tile--add"
+                            onClick={() => galleryInputRef.current?.click()}
+                          >
+                            <i className="fa-solid fa-camera" aria-hidden="true"></i>
+                            <span>{t("partner_profile.gallery.add_photo")}</span>
+                          </button>
+                        )}
+                      </div>
+
+                      <input
+                        ref={galleryInputRef}
+                        type="file"
+                        accept="image/png, image/jpeg, image/webp"
+                        multiple
+                        hidden
+                        onChange={handleGalleryFilesSelected}
+                      />
+
+                      <p className={`small mb-0 mt-2 ${galleryPhotos.length < MIN_GALLERY_PHOTOS ? 'text-danger' : 'text-body-secondary'}`}>
+                        {t("partner_register.gallery_count", { count: galleryPhotos.length, min: MIN_GALLERY_PHOTOS })}
+                      </p>
+                    </div>
                   </>
                 )}
 
@@ -707,7 +789,7 @@ export function PartnerRegister() {
                     <button
                       type="submit"
                       className="btn btn-primary px-4"
-                      disabled={loading}
+                      disabled={loading || galleryPhotos.length < MIN_GALLERY_PHOTOS}
                     >
                       {loading
                         ? t("partner_register.registering")

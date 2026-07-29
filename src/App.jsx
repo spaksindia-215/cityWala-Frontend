@@ -33,6 +33,11 @@ import CategoriesTree from './pages/admin/CategoriesTree'
 import AdminSubcategories from './pages/admin/AdminSubcategories'
 import TermsCondition from './pages/admin/TermsCondition'
 import Analytics from './pages/admin/Analytics'
+import AdminAllBlogs from './pages/admin/blog/AdminAllBlogs'
+import AdminBlogForm from './pages/admin/blog/AdminBlogForm'
+import AdminBlogCategories from './pages/admin/blog/AdminBlogCategories'
+import Blogs from './pages/Blogs'
+import BlogDetail from './pages/BlogDetail'
 
 import { ResetPassword } from './pages/ResetPassword'
 import VerifyOtp from './components/VerifyOtp'
@@ -181,6 +186,8 @@ const AdminRoot = () => (
           <Route path="/categories/:level1?/:level2?/:level3?" element={<AllCategories />} />
           <Route path="/register-business" element={<PartnerRegister />} />
           <Route path='/terms-and-conditions' element={ <TermConditions /> } />
+          <Route path="/blogs" element={<Blogs />} />
+          <Route path="/blogs/:slug" element={<BlogDetail />} />
           <Route path="*" element={<NotFound />} />
         </Route>
 
@@ -227,6 +234,10 @@ const AdminRoot = () => (
           <Route path="/admin/subcategories" element={<NoIndex><ProtectedAdmin><AdminSubcategories /></ProtectedAdmin></NoIndex>} />
           <Route path="/admin/term-and-condition" element={<NoIndex><ProtectedAdmin><TermsCondition /></ProtectedAdmin></NoIndex>} />
           <Route path="/admin/analytics" element={<NoIndex><ProtectedAdmin><Analytics /></ProtectedAdmin></NoIndex>} />
+          <Route path="/admin/blogs" element={<NoIndex><ProtectedAdmin><AdminAllBlogs /></ProtectedAdmin></NoIndex>} />
+          <Route path="/admin/blogs/add" element={<NoIndex><ProtectedAdmin><AdminBlogForm /></ProtectedAdmin></NoIndex>} />
+          <Route path="/admin/blogs/edit/:id" element={<NoIndex><ProtectedAdmin><AdminBlogForm /></ProtectedAdmin></NoIndex>} />
+          <Route path="/admin/blogs/categories" element={<NoIndex><ProtectedAdmin><AdminBlogCategories /></ProtectedAdmin></NoIndex>} />
         </Route>
 
       </Routes>

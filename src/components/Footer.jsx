@@ -42,8 +42,9 @@ export default function Footer() {
                   <h3 className="mt-4">{t('footer.follow_us')}</h3>
                   <div className="social-icon mt-2">
                     <ul>
-                      <li><a href="#" aria-label="Facebook"><i className="fab fa-facebook-f" aria-hidden="true"></i></a></li>
-                      <li><a href="#" aria-label="Instagram"><i className="fab fa-instagram" aria-hidden="true"></i></a></li>
+                      <li><a href="https://www.facebook.com/profile" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i className="fab fa-facebook-f" aria-hidden="true"></i></a></li>
+                      <li><a href="https://www.instagram.com/citywala1959/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i className="fab fa-instagram" aria-hidden="true"></i></a></li>
+                      <li><a href="https://x.com/MyCitywala" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i className="fab fa-twitter" aria-hidden="true"></i></a></li>
                       <li><a href="#" aria-label="LinkedIn"><i className="fab fa-linkedin-in" aria-hidden="true"></i></a></li>
                       <li><a href="https://web.whatsapp.com/send?phone=8368741739" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i className="fab fa-whatsapp" aria-hidden="true"></i></a></li>
                     </ul>

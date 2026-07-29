@@ -11,7 +11,11 @@ export const organizationSchema = () => ({
   logo: DEFAULT_OG_IMAGE,
   description:
     "CityWala is a business listing website and online marketplace in India connecting businesses, MSMEs, exporters, importers, wholesalers, retailers, and customers.",
-  sameAs: [],
+  sameAs: [
+    "https://www.facebook.com/profile",
+    "https://www.instagram.com/citywala1959/",
+    "https://x.com/MyCitywala",
+  ],
 });
 
 export const websiteSchema = () => ({
@@ -108,6 +112,45 @@ export const faqSchema = (faqs = []) => ({
       text: faq.answer,
     },
   })),
+});
+
+/**
+ * Article/BlogPosting schema for a blog detail page. `blog` is the API blog
+ * object (title, shortDescription, featuredImage, author, category,
+ * publishedAt/createdAt, updatedAt, seo.schemaType).
+ */
+export const blogPostSchema = (blog, path) => {
+  const schema = {
+    "@type": blog?.seo?.schemaType || "BlogPosting",
+    "@id": `${buildCanonical(path)}#article`,
+    headline: blog.seo?.seoTitle || blog.title,
+    description: blog.seo?.metaDescription || blog.shortDescription || DEFAULT_DESCRIPTION,
+    url: buildCanonical(path),
+    mainEntityOfPage: { "@id": `${buildCanonical(path)}#webpage` },
+    datePublished: blog.publishedAt || blog.createdAt,
+    dateModified: blog.updatedAt || blog.publishedAt || blog.createdAt,
+    publisher: { "@id": ORG_ID },
+    author: {
+      "@type": "Organization",
+      name: SITE_NAME,
+    },
+  };
+
+  if (blog.featuredImage) schema.image = [blog.featuredImage];
+  if (blog.category?.name) schema.articleSection = blog.category.name;
+  if (blog.tags?.length) schema.keywords = blog.tags.join(", ");
+
+  return schema;
+};
+
+/** CollectionPage schema for the /blogs listing page. */
+export const blogListSchema = ({ path, name = "Blog", description } = {}) => ({
+  "@type": "CollectionPage",
+  "@id": `${buildCanonical(path)}#bloglist`,
+  url: buildCanonical(path),
+  name,
+  description: description || "Guides on local businesses, travel, hotels, restaurants and more from CityWala.",
+  isPartOf: { "@id": WEBSITE_ID },
 });
 
 /** Wraps one or more schema nodes in the shared @graph/@context envelope. */

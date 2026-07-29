@@ -14,6 +14,7 @@ export default function PartnerDetails() {
     const [partner, setPartner] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [lightboxIndex, setLightboxIndex] = useState(null);
 
     // Sticky mobile Call/Email bar shares bottom-right screen space with the
     // global WhatsApp/call FAB stack — nudge the FABs up while this page is mounted.
@@ -21,6 +22,25 @@ export default function PartnerDetails() {
         document.body.classList.add('has-sticky-profile-actions');
         return () => document.body.classList.remove('has-sticky-profile-actions');
     }, []);
+
+    const galleryImages = partner?.gallery_images || [];
+
+    useEffect(() => {
+        if (lightboxIndex === null) return;
+
+        const onKeyDown = (e) => {
+            if (e.key === 'Escape') setLightboxIndex(null);
+            if (e.key === 'ArrowRight') setLightboxIndex((i) => (i + 1) % galleryImages.length);
+            if (e.key === 'ArrowLeft') setLightboxIndex((i) => (i - 1 + galleryImages.length) % galleryImages.length);
+        };
+
+        document.addEventListener('keydown', onKeyDown);
+        document.body.classList.add('cw-lightbox-open');
+        return () => {
+            document.removeEventListener('keydown', onKeyDown);
+            document.body.classList.remove('cw-lightbox-open');
+        };
+    }, [lightboxIndex, galleryImages.length]);
 
     useEffect(() => {
         const fetchPartner = async () => {
@@ -155,14 +175,7 @@ export default function PartnerDetails() {
 
             {/* Profile Hero Header Card */}
             <div className="cw-card p-0 overflow-hidden mb-4">
-                <div className="cw-profile-cover" aria-hidden="true">
-                    {isVerified && (
-                        <span className="badge rounded-pill cw-badge cw-badge--success position-absolute top-0 end-0 m-3">
-                            <i className="fa-solid fa-circle-check me-1" aria-hidden="true"></i>
-                            {t("verified")}
-                        </span>
-                    )}
-                </div>
+                <div className="cw-profile-cover" aria-hidden="true"></div>
 
                 <div className="px-4 pb-4 pt-0 position-relative">
                     <div className="d-flex flex-column flex-md-row align-items-center align-items-md-end text-center text-md-start gap-4 cw-profile-header">
@@ -182,7 +195,19 @@ export default function PartnerDetails() {
                         </div>
 
                         <div className="flex-grow-1 mt-2 mt-md-0">
-                            <h1 className="fw-extrabold mb-1 fs-3">{businessName}</h1>
+                            <h1 className="fw-extrabold mb-1 fs-3 d-flex align-items-center justify-content-center justify-content-md-start gap-2 flex-wrap">
+                                {businessName}
+                                {isVerified && (
+                                    <span
+                                        className="cw-badge cw-badge--success rounded-pill d-inline-flex align-items-center gap-1 fs-6"
+                                        style={{ fontSize: "0.55em", padding: "0.25em 0.6em" }}
+                                        title={t("verified")}
+                                    >
+                                        <i className="fa-solid fa-circle-check" aria-hidden="true"></i>
+                                        {t("verified")}
+                                    </span>
+                                )}
+                            </h1>
                             <p className="text-body-secondary mb-0 fs-6 fw-medium">
                                 {partner.company_short_desc || t("business_overview")}
                             </p>
@@ -200,6 +225,26 @@ export default function PartnerDetails() {
                     </div>
                 </div>
             </div>
+
+            {/* Business Photos */}
+            {galleryImages.length > 0 && (
+                <div className="cw-card mb-4">
+                    <h2 className="h5 mb-3">{t("business_photos")}</h2>
+                    <div className="cw-detail-gallery-grid">
+                        {galleryImages.map((url, idx) => (
+                            <button
+                                type="button"
+                                key={url}
+                                className="cw-detail-gallery-tile"
+                                onClick={() => setLightboxIndex(idx)}
+                                aria-label={`${businessName} ${t("business_photos")} ${idx + 1}`}
+                            >
+                                <img src={url} alt="" loading="lazy" />
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             {/* Main Grid: Details & Overview */}
             <div className="row g-4">
@@ -312,6 +357,59 @@ export default function PartnerDetails() {
                     </div>
                 </div>
             </div>
+
+            {lightboxIndex !== null && (
+                <div
+                    className="cw-lightbox"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label={t("business_photos")}
+                    onClick={() => setLightboxIndex(null)}
+                >
+                    <button
+                        type="button"
+                        className="cw-lightbox__close"
+                        onClick={() => setLightboxIndex(null)}
+                        aria-label={t("go_back")}
+                    >
+                        <i className="fa-solid fa-xmark" aria-hidden="true"></i>
+                    </button>
+
+                    {galleryImages.length > 1 && (
+                        <button
+                            type="button"
+                            className="cw-lightbox__nav cw-lightbox__nav--prev"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setLightboxIndex((i) => (i - 1 + galleryImages.length) % galleryImages.length);
+                            }}
+                            aria-label="Previous photo"
+                        >
+                            <i className="fa-solid fa-chevron-left" aria-hidden="true"></i>
+                        </button>
+                    )}
+
+                    <img
+                        src={galleryImages[lightboxIndex]}
+                        alt={`${businessName} ${lightboxIndex + 1}`}
+                        onClick={(e) => e.stopPropagation()}
+                    />
+
+                    {galleryImages.length > 1 && (
+                        <button
+                            type="button"
+                            className="cw-lightbox__nav cw-lightbox__nav--next"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setLightboxIndex((i) => (i + 1) % galleryImages.length);
+                            }}
+                            aria-label="Next photo"
+                        >
+                            <i className="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                        </button>
+                    )}
+                </div>
+            )}
         </div>
     );
 }

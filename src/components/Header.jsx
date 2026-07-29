@@ -167,6 +167,9 @@ useEffect(() => {
                   <Link to="/about-us">{t('header.about_us')}</Link>
                 </li>
                 <li>
+                  <Link to="/blogs">{t('header.blog', { defaultValue: 'Blog' })}</Link>
+                </li>
+                <li>
                   <Link to="/register-business">{t('header.list_business')}</Link>
                 </li>
                 <li className="dropdown">

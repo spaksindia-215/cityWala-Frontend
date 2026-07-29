@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../../api/axios";
 import { useAuth } from "../../context/AuthContext";
@@ -8,6 +8,8 @@ import SectionHeader from "../../components/ui/SectionHeader";
 import EmptyState from "../../components/ui/EmptyState";
 import AvatarPlaceholder from "../../assets/avatar-placeholder.svg";
 import { useToast } from "../../context/ToastContext";
+
+const MAX_GALLERY_PHOTOS = 5;
 
 export default function ProfilePage() {
   const { t } = useTranslation();
@@ -22,6 +24,11 @@ export default function ProfilePage() {
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
   const [subSubcategories, setSubSubcategories] = useState([]);
+
+  const [galleryImages, setGalleryImages] = useState([]);
+  const [galleryUploading, setGalleryUploading] = useState(false);
+  const [removingPhoto, setRemovingPhoto] = useState(null);
+  const galleryInputRef = useRef(null);
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -41,6 +48,7 @@ export default function ProfilePage() {
         const res = await API.get("/partner/profile");
         const partnerData = res.data;
         setProfile(partnerData);
+        setGalleryImages(partnerData.gallery_images || []);
         setForm({
           ...partnerData,
           category_id: partnerData.category_id?._id || partnerData.category_id || "",
@@ -198,6 +206,51 @@ export default function ProfilePage() {
     } catch (err) {
       console.error("PROFILE UPDATE ERROR:", err.response?.data || err.message || err);
       showToast(err.response?.data?.message || err.message || "Error updating profile", "danger");
+    }
+  };
+
+  const remainingSlots = MAX_GALLERY_PHOTOS - galleryImages.length;
+
+  const handleGalleryFilesSelected = async (e) => {
+    const files = Array.from(e.target.files || []);
+    e.target.value = "";
+    if (!files.length) return;
+
+    if (files.length > remainingSlots) {
+      showToast(
+        t("partner_profile.gallery.limit_error", {
+          max: MAX_GALLERY_PHOTOS,
+          remaining: remainingSlots,
+        }),
+        "danger"
+      );
+      return;
+    }
+
+    try {
+      setGalleryUploading(true);
+      const formData = new FormData();
+      files.forEach((file) => formData.append("photos", file));
+
+      const res = await API.post("/partner/gallery", formData);
+      setGalleryImages(res.data.gallery_images || []);
+      showToast(t("partner_profile.gallery.upload_success"), "success");
+    } catch (err) {
+      showToast(err.response?.data?.message || err.message || t("partner_profile.gallery.upload_error"), "danger");
+    } finally {
+      setGalleryUploading(false);
+    }
+  };
+
+  const handleRemovePhoto = async (url) => {
+    try {
+      setRemovingPhoto(url);
+      const res = await API.delete("/partner/gallery", { data: { url } });
+      setGalleryImages(res.data.gallery_images || []);
+    } catch (err) {
+      showToast(err.response?.data?.message || err.message || t("partner_profile.gallery.remove_error"), "danger");
+    } finally {
+      setRemovingPhoto(null);
     }
   };
 
@@ -425,6 +478,66 @@ export default function ProfilePage() {
             </p>
           </div>
         )}
+      </div>
+
+      {/* ───────── BUSINESS PHOTOS ───────── */}
+      <div className="cw-card mt-4">
+        <SectionHeader
+          title={t("partner_profile.gallery.title")}
+          subtitle={t("partner_profile.gallery.subtitle", { max: MAX_GALLERY_PHOTOS })}
+        />
+
+        <div className="cw-gallery-grid">
+          {galleryImages.map((url) => (
+            <div className="cw-gallery-tile" key={url}>
+              <img src={url} alt="" aria-hidden="true" />
+              <button
+                type="button"
+                className="cw-gallery-tile__remove"
+                onClick={() => handleRemovePhoto(url)}
+                disabled={removingPhoto === url}
+                aria-label={t("partner_profile.gallery.remove")}
+              >
+                {removingPhoto === url ? (
+                  <i className="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+                ) : (
+                  <i className="fa-solid fa-xmark" aria-hidden="true"></i>
+                )}
+              </button>
+            </div>
+          ))}
+
+          {remainingSlots > 0 && (
+            <button
+              type="button"
+              className="cw-gallery-tile cw-gallery-tile--add"
+              onClick={() => galleryInputRef.current?.click()}
+              disabled={galleryUploading}
+            >
+              {galleryUploading ? (
+                <i className="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+              ) : (
+                <>
+                  <i className="fa-solid fa-camera" aria-hidden="true"></i>
+                  <span>{t("partner_profile.gallery.add_photo")}</span>
+                </>
+              )}
+            </button>
+          )}
+        </div>
+
+        <input
+          ref={galleryInputRef}
+          type="file"
+          accept="image/png, image/jpeg, image/webp"
+          multiple
+          hidden
+          onChange={handleGalleryFilesSelected}
+        />
+
+        <p className="text-body-secondary small mb-0 mt-3">
+          {t("partner_profile.gallery.help", { count: galleryImages.length, max: MAX_GALLERY_PHOTOS })}
+        </p>
       </div>
     </div>
   );

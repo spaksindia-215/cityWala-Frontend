@@ -11,6 +11,7 @@
   "mobile_number": "Mobile Number",
   "company_website": "Company Website",
   "business_overview": "Business Overview",
+  "business_photos": "Business Photos",
   "about_company": "About the Company",
   "full_registered_name": "Full Registered Name",
   "postal_zip_code": "Postal / ZIP Code",
@@ -230,7 +231,11 @@
     "description_placeholder": "Business Short Description *",
     "back": "Back",
     "next": "Next",
-    "register_as_partner": "Register as Partner"
+    "register_as_partner": "Register as Partner",
+    "gallery_label": "Business Photos (minimum {{min}} required)",
+    "gallery_help": "Upload {{min}} to {{max}} photos of your shop, products, or work to showcase on your public profile.",
+    "gallery_count": "{{count}} of {{min}} required photos added.",
+    "gallery_min_error": "Please upload at least {{min}} photos of your business"
   },
   "forgot": {
     "title": "Forgot Password?",
@@ -452,6 +457,18 @@
       "gst": "GST Number",
       "status": "Status",
       "plan": "Plan"
+    },
+
+    "gallery": {
+      "title": "Business Photos",
+      "subtitle": "Add up to {{max}} photos of your shop, products, or work to showcase on your public profile.",
+      "add_photo": "Add Photo",
+      "remove": "Remove photo",
+      "help": "{{count}} of {{max}} photos uploaded.",
+      "limit_error": "You can only add {{remaining}} more photo(s). Maximum is {{max}}.",
+      "upload_success": "Business photos uploaded successfully!",
+      "upload_error": "Failed to upload business photos",
+      "remove_error": "Failed to remove photo"
     },
 
     "actions": {

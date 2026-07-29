@@ -30,6 +30,15 @@ export default function AdminSidebar() {
                 { to: "/admin/plans/add", label: "Add Plan" },
             ],
         },
+        {
+            icon: "fa-newspaper",
+            label: "Blogs",
+            children: [
+                { to: "/admin/blogs", label: "All Blogs" },
+                { to: "/admin/blogs/add", label: "Add Blog" },
+                { to: "/admin/blogs/categories", label: "Blog Categories" },
+            ],
+        },
         { to: "/admin/term-and-condition", icon: "fa-table-cells-large", label: "Term and Condition" },
     ];
 

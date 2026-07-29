@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 export default function BusinessCard({ partner, onOpen }) {
   const { t } = useTranslation();
   const initial = partner.name?.charAt(0)?.toUpperCase() || "?";
+  const isVerified = partner.status === "approved";
 
   return (
     <div
@@ -30,7 +31,17 @@ export default function BusinessCard({ partner, onOpen }) {
       </div>
 
       <div className="flex-grow-1 min-w-0">
-        <h4 className="mb-1 text-truncate">{partner.name}</h4>
+        <h4 className="mb-1 text-truncate d-flex align-items-center gap-1">
+          <span className="text-truncate">{partner.name}</span>
+          {isVerified && (
+            <i
+              className="fa-solid fa-circle-check text-success flex-shrink-0"
+              style={{ fontSize: "0.75em" }}
+              title={t("verified")}
+              aria-label={t("verified")}
+            ></i>
+          )}
+        </h4>
 
         {partner.company_name && (
           <div className="cw-business-card__company text-truncate">{partner.company_name}</div>

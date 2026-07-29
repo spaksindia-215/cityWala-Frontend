@@ -114,7 +114,11 @@ const organizationSchema = () => ({
   logo: DEFAULT_OG_IMAGE,
   description:
     "CityWala is a business listing website and online marketplace in India connecting businesses, MSMEs, exporters, importers, wholesalers, retailers, and customers.",
-  sameAs: [],
+  sameAs: [
+    "https://www.facebook.com/profile",
+    "https://www.instagram.com/citywala1959/",
+    "https://x.com/MyCitywala",
+  ],
 });
 const websiteSchema = () => ({
   "@type": "WebSite",
