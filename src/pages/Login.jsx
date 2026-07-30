@@ -7,6 +7,7 @@ import 'react-phone-input-2/lib/style.css';
 import { useTranslation } from 'react-i18next';
 import PasswordStrengthMeter from '../components/PasswordStrengthMeter';
 import AuthCard from '../components/ui/AuthCard';
+import PasswordInput from '../components/ui/PasswordInput';
 
 export function Login() {
   const { login } = useAuth();
@@ -116,10 +117,9 @@ export function Login() {
           </div>
         )}
 
-        <div className="form-floating mb-3 z-1">
-          <input
-            type="password"
-            className="form-control"
+        <div className="form-floating mb-3 z-1 position-relative">
+          <PasswordInput
+            inputClassName="form-control"
             placeholder={t('login.password')}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -241,14 +241,15 @@ export function Register() {
 
         <div className="mb-3">
           <label className="form-label">{t('register.password')}</label>
-          <input
-            type="password"
-            className="form-control"
-            placeholder={t('register.password')}
-            required
-            value={form.password}
-            onChange={e => setForm({ ...form, password: e.target.value })}
-          />
+          <div className="position-relative">
+            <PasswordInput
+              inputClassName="form-control"
+              placeholder={t('register.password')}
+              required
+              value={form.password}
+              onChange={e => setForm({ ...form, password: e.target.value })}
+            />
+          </div>
           <PasswordStrengthMeter
             password={form.password}
             email={form.email}
@@ -258,10 +259,9 @@ export function Register() {
           {errors.password && <div className="text-danger small mt-2">{errors.password}</div>}
         </div>
 
-        <div className="form-floating mb-4">
-          <input
-            type="password"
-            className={`form-control ${errors.password_confirmation ? 'is-invalid' : ''}`}
+        <div className="form-floating mb-4 position-relative">
+          <PasswordInput
+            inputClassName={`form-control ${errors.password_confirmation ? 'is-invalid' : ''}`}
             placeholder={t('register.confirm_password')}
             required
             value={form.password_confirmation}

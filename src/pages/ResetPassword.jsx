@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import API from "../api/axios";
 import AuthCard from "../components/ui/AuthCard";
+import PasswordInput from "../components/ui/PasswordInput";
 
 export function ResetPassword() {
   const { t } = useTranslation();
@@ -70,10 +71,9 @@ export function ResetPassword() {
       {success && <div className="alert alert-success py-2">{t("auth.reset_success")}</div>}
 
       <form onSubmit={handleSubmit}>
-        <div className="form-floating mb-3">
-          <input
-            type="password"
-            className="form-control"
+        <div className="form-floating mb-3 position-relative">
+          <PasswordInput
+            inputClassName="form-control"
             placeholder={t("auth.new_password")}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -82,10 +82,9 @@ export function ResetPassword() {
           <label>{t("auth.new_password")}</label>
         </div>
 
-        <div className="form-floating mb-4">
-          <input
-            type="password"
-            className="form-control"
+        <div className="form-floating mb-4 position-relative">
+          <PasswordInput
+            inputClassName="form-control"
             placeholder={t("auth.confirm_password")}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}

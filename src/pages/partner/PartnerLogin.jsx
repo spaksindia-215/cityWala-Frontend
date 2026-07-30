@@ -12,6 +12,7 @@ import PasswordStrengthMeter from '../../components/PasswordStrengthMeter';
 import AuthCard from '../../components/ui/AuthCard';
 import StatCard from '../../components/ui/StatCard';
 import DashboardPageHeader from '../../components/ui/DashboardPageHeader';
+import PasswordInput from '../../components/ui/PasswordInput';
 
 const BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'
 // const BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'https://citywala-backend.onrender.com'
@@ -64,8 +65,8 @@ export function PartnerLogin() {
             value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required />
           <label>{t("auth.email_address")}</label>
         </div>
-        <div className="form-floating mb-4">
-          <input type="password" className="form-control" id="password" placeholder={t("auth.password")}
+        <div className="form-floating mb-4 position-relative">
+          <PasswordInput inputClassName="form-control" id="password" placeholder={t("auth.password")}
             value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} required />
           <label>{t("auth.password")}</label>
         </div>
@@ -447,15 +448,16 @@ export function PartnerRegister() {
 
                     <div className="col-12">
                       <label className="form-label">{t("auth.password")} *</label>
-                      <input
-                        type="password"
-                        className="form-control"
-                        placeholder={`${t("auth.password")} *`}
-                        name="password"
-                        value={form.password}
-                        onChange={handleChange}
-                        required
-                      />
+                      <div className="position-relative">
+                        <PasswordInput
+                          inputClassName="form-control"
+                          placeholder={`${t("auth.password")} *`}
+                          name="password"
+                          value={form.password}
+                          onChange={handleChange}
+                          required
+                        />
+                      </div>
                       <PasswordStrengthMeter
                         password={form.password}
                         email={form.email}
@@ -464,10 +466,9 @@ export function PartnerRegister() {
                       />
                     </div>
 
-                    <div className="col-md-6">
-                      <input
-                        type="password"
-                        className="form-control"
+                    <div className="col-md-6 position-relative">
+                      <PasswordInput
+                        inputClassName="form-control"
                         placeholder={`${t("auth.confirm_password")} *`}
                         name="confirmPassword"
                         value={form.confirmPassword}
