@@ -118,9 +118,6 @@ export default function Header() {
   };
 
   const handleCategories = (cat) => {
-    if (!user && !partner) {
-      return navigate('/login');
-    }
     navigate(`/categories/${cat.slug}`);
   }
 
@@ -130,12 +127,12 @@ export default function Header() {
   };
 
 
-const [users, setUsers] = useState([])
+const [userCount, setUserCount] = useState(0)
 
 useEffect(() => {
-  API.get(`/admin/users`)
+  API.get(`/admin/users/count`)
     .then((res) => {
-      setUsers(res.data.users || [])
+      setUserCount(res.data.total || 0)
     })
     .catch((err) => {
       console.log(err)
@@ -303,7 +300,7 @@ useEffect(() => {
                     </span>
                     <span>
                       <span className="header-stat__label d-block">{t('header.total_users')}</span>
-                      <span className="header-stat__value">{users?.length || 0}</span>
+                      <span className="header-stat__value">{userCount}</span>
                     </span>
                   </div>
                 </li>

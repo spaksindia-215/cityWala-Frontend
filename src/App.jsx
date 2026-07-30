@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import SessionTimeoutProvider from './context/SessionTimeoutProvider'
 import { ToastProvider } from './context/ToastContext'
@@ -77,6 +77,7 @@ function AppContent() {
 const ProtectedUser = ({ children }) => {
 
   const { user, loading } = useAuth();
+  const location = useLocation();
 
   if (loading) {
     return (
@@ -87,7 +88,7 @@ const ProtectedUser = ({ children }) => {
   }
 
   if (!user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   if (user.isVerified === false) {
@@ -101,6 +102,7 @@ const ProtectedUser = ({ children }) => {
 const ProtectedPartner = ({ children }) => {
 
   const { partner, loading } = useAuth();
+  const location = useLocation();
 
   if (loading) {
     return (
@@ -111,7 +113,7 @@ const ProtectedPartner = ({ children }) => {
   }
 
   if (!partner) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/partner/login" state={{ from: location }} replace />;
   }
 
   if (partner.isVerified === false) {
@@ -125,6 +127,7 @@ const ProtectedPartner = ({ children }) => {
 const ProtectedAdmin = ({ children }) => {
 
   const { admin, loading } = useAuth();
+  const location = useLocation();
 
   if (loading) {
     return (
@@ -135,7 +138,7 @@ const ProtectedAdmin = ({ children }) => {
   }
 
   if (!admin) {
-    return <Navigate to="/admin/login" replace />;
+    return <Navigate to="/admin/login" state={{ from: location }} replace />;
   }
 
   return children;

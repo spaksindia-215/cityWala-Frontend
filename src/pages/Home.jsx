@@ -2,7 +2,6 @@ import { useState, useEffect, useRef, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import API from '../api/axios'
 import SearchableSelect from '../components/SearchableSelect';
-import { useAuth } from '../context/AuthContext';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -52,7 +51,6 @@ const POPULAR_CATEGORIES = [
 export default function Home() {
   const { t } = useTranslation();
   const navigate = useNavigate()
-  const { user, partner } = useAuth();
   const [popularCategories, setPopularCategories] = useState([])
   const [banners, setBanners] = useState([])
   const [advertises, setAdvertises] = useState([])
@@ -199,11 +197,6 @@ export default function Home() {
   const handleSearch = (e) => {
     e.preventDefault();
 
-    if (!user && !partner) {
-      navigate("/login");
-      return;
-    }
-
     const params = new URLSearchParams();
 
     if (search.country) params.append("country", search.country);
@@ -251,23 +244,10 @@ export default function Home() {
   //   navigate(`/categories/${cat.slug}`)
   // };
 
-  const handleCategory = async (cat) => {
-    try {
-      const res = await API.get("/auth/me", {
-        withCredentials: true,
-      });
-  
-      if (!res.data) {
-        navigate("/login");
-        return;
-      }
-  
-      navigate(`/categories/${cat.slug}`);
-    } catch (err) {
-      navigate("/login");
-    }
+  const handleCategory = (cat) => {
+    navigate(`/categories/${cat.slug}`);
   };
-  
+
   const scrollCats = (dir) => {
     if (scrollRef.current) scrollRef.current.scrollLeft += dir * 200
   }

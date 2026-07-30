@@ -41,7 +41,10 @@ export function Login() {
 
       const res = await login(finalLogin, password);
 
-      if (res.role === "partner") {
+      const from = location.state?.from;
+      if (from?.pathname) {
+        navigate(from.pathname + (from.search || ''), { replace: true });
+      } else if (res.role === "partner") {
         navigate("/partner/dashboard");
       } else {
         navigate("/");

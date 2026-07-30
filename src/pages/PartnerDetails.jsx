@@ -1,20 +1,43 @@
 import { useTranslation } from "react-i18next";
-import { useParams, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
 import API from '../api/axios';
 import Seo from '../seo/Seo';
 import Breadcrumbs from '../components/Breadcrumbs';
 import EmptyState from '../components/ui/EmptyState';
 import { localBusinessSchema, webPageSchema, graph } from '../seo/schema';
+import { useAuth } from '../context/AuthContext';
 
 export default function PartnerDetails() {
     const { t } = useTranslation();
     const { id } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
+    const { user, partner: loggedInPartner, admin } = useAuth();
+    const isAuthenticated = !!(user || loggedInPartner || admin);
     const [partner, setPartner] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [lightboxIndex, setLightboxIndex] = useState(null);
+    const contactCardRef = useRef(null);
+
+    const requireAuthToContact = (e) => {
+        if (isAuthenticated) return;
+        e.preventDefault();
+        navigate('/login', {
+            state: { from: { pathname: location.pathname, search: '?contact=1' } },
+        });
+    };
+
+    // If we've just been redirected back here after login specifically to
+    // complete a contact action, draw attention to the contact details.
+    useEffect(() => {
+        if (!isAuthenticated) return;
+        const params = new URLSearchParams(location.search);
+        if (params.get('contact') === '1' && contactCardRef.current) {
+            contactCardRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }, [isAuthenticated, location.search]);
 
     // Sticky mobile Call/Email bar shares bottom-right screen space with the
     // global WhatsApp/call FAB stack — nudge the FABs up while this page is mounted.
@@ -213,12 +236,22 @@ export default function PartnerDetails() {
                             </p>
                         </div>
 
-                        {/* Quick Actions (Call / Email) — sticky bottom bar on mobile */}
+                        {/* Quick Actions (Call / Email) — sticky bottom bar on mobile.
+                            Contacting a business requires login; unauthenticated
+                            clicks redirect to login and return here afterwards. */}
                         <div className="cw-profile-actions d-flex gap-2 w-100 w-md-auto mt-3 mt-md-0 justify-content-center">
-                            <a href={`tel:${partner.mobile}`} className="nav-btn primary flex-grow-1 flex-md-grow-0">
+                            <a
+                                href={`tel:${partner.mobile}`}
+                                className="nav-btn primary flex-grow-1 flex-md-grow-0"
+                                onClick={requireAuthToContact}
+                            >
                                 <i className="fa-solid fa-phone" aria-hidden="true"></i>{t("call_partner")}
                             </a>
-                            <a href={`mailto:${partner.email}`} className="nav-btn outline flex-grow-1 flex-md-grow-0">
+                            <a
+                                href={`mailto:${partner.email}`}
+                                className="nav-btn outline flex-grow-1 flex-md-grow-0"
+                                onClick={requireAuthToContact}
+                            >
                                 <i className="fa-solid fa-envelope" aria-hidden="true"></i>{t("email")}
                             </a>
                         </div>
@@ -250,7 +283,7 @@ export default function PartnerDetails() {
             <div className="row g-4">
                 {/* Left Side Info Panel */}
                 <div className="col-lg-4">
-                    <div className="cw-card mb-4">
+                    <div className="cw-card mb-4" ref={contactCardRef}>
                         <h2 className="cw-overline mb-3">{t("contact_details")}</h2>
 
                         <div className="d-flex flex-column gap-3">
@@ -270,9 +303,19 @@ export default function PartnerDetails() {
                                 </span>
                                 <div className="overflow-hidden">
                                     <div className="cw-overline mb-1">{t("official_email")}</div>
-                                    <a href={`mailto:${partner.email}`} className="fw-bold text-break d-block">
-                                        {partner.email}
-                                    </a>
+                                    {isAuthenticated ? (
+                                        <a href={`mailto:${partner.email}`} className="fw-bold text-break d-block">
+                                            {partner.email}
+                                        </a>
+                                    ) : (
+                                        <button
+                                            type="button"
+                                            className="fw-bold text-break d-block btn btn-link p-0 text-start"
+                                            onClick={requireAuthToContact}
+                                        >
+                                            {t("login_to_view", { defaultValue: "Login to view" })}
+                                        </button>
+                                    )}
                                 </div>
                             </div>
 
@@ -282,9 +325,19 @@ export default function PartnerDetails() {
                                 </span>
                                 <div>
                                     <div className="cw-overline mb-1">{t("mobile_number")}</div>
-                                    <a href={`tel:${partner.mobile}`} className="fw-bold">
-                                        {partner.country_code || '+91'} {partner.mobile}
-                                    </a>
+                                    {isAuthenticated ? (
+                                        <a href={`tel:${partner.mobile}`} className="fw-bold">
+                                            {partner.country_code || '+91'} {partner.mobile}
+                                        </a>
+                                    ) : (
+                                        <button
+                                            type="button"
+                                            className="fw-bold btn btn-link p-0 text-start"
+                                            onClick={requireAuthToContact}
+                                        >
+                                            {t("login_to_view", { defaultValue: "Login to view" })}
+                                        </button>
+                                    )}
                                 </div>
                             </div>
 

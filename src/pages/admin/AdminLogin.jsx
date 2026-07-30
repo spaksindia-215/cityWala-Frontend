@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import API from '../../api/axios'
@@ -51,6 +51,7 @@ export { default as AdminSidebar } from './AdminSidebar';
 export function AdminLogin() {
   const { adminLogin } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
   const { t } = useTranslation()
   const [form, setForm] = useState({ email: '', password: '' })
   const [error, setError] = useState('')
@@ -61,7 +62,12 @@ export function AdminLogin() {
     e.preventDefault(); setError(''); setLoading(true)
     try {
       await adminLogin(form.email, form.password)
-      navigate('/admin/dashboard')
+      const from = location.state?.from;
+      if (from?.pathname) {
+        navigate(from.pathname + (from.search || ''), { replace: true })
+      } else {
+        navigate('/admin/dashboard')
+      }
     } catch (err) {
       setError(err.response?.data?.message || t('admin_login.invalid_credentials'))
     } finally { setLoading(false) }

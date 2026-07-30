@@ -1,6 +1,6 @@
 
 import { useState, useEffect, useRef } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'; // Iska CSS zaroori hai flags ke liye
@@ -22,6 +22,7 @@ const imgUrl = (path) => path ? `${BASE}/${path}` : ''
 export function PartnerLogin() {
   const { partnerLogin } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
   const { t } = useTranslation()
   const [form, setForm] = useState({ email: '', password: '' })
   const [error, setError] = useState('')
@@ -31,7 +32,12 @@ export function PartnerLogin() {
     e.preventDefault(); setError(''); setLoading(true)
     try {
       await partnerLogin(form.email, form.password)
-      navigate('/partner/dashboard')
+      const from = location.state?.from;
+      if (from?.pathname) {
+        navigate(from.pathname + (from.search || ''), { replace: true })
+      } else {
+        navigate('/partner/dashboard')
+      }
     } catch (err) {
       if (err.response?.data?.requiresVerification) {
         navigate('/verify-email-pending', { state: { email: form.email } })
