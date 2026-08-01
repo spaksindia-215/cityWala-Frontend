@@ -14,7 +14,7 @@ import { webPageSchema, graph } from '../seo/schema'
 import { DEFAULT_TITLE, DEFAULT_DESCRIPTION } from '../seo/config'
 
 const POPULAR_CATEGORIES = [
-  { id: 1, tKey: 'matrimonial', name: 'Matrimonial', img: 'https://citywala.com/popular_photo/1768286155_matrimonial.svg', link: '/matrimonial' },
+  { id: 1, tKey: 'matrimonial', name: 'Matrimonial', img: 'https://citywala.com/popular_photo/1768286155_matrimonial.svg', link: 'https://matrimonial.citywala.com/' },
   { id: 2, tKey: 'daily_necessity', name: 'Daily Necessity', img: 'https://citywala.com/popular_photo/1768286166_daily-necessary.svg', link: '/daily-necessary' },
   { id: 3, tKey: 'education', name: 'Education', img: 'https://citywala.com/popular_photo/1768286187_education.svg', link: '#' },
   { id: 4, tKey: 'health', name: 'Health', img: 'https://citywala.com/popular_photo/1768286207_health.svg', link: '#' },
@@ -245,6 +245,10 @@ export default function Home() {
   // };
 
   const handleCategory = (cat) => {
+    if (cat.tKey === 'matrimonial' || cat.slug === 'matrimonial') {
+      window.location.href = 'https://matrimonial.citywala.com/';
+      return;
+    }
     navigate(`/categories/${cat.slug}`);
   };
 

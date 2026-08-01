@@ -21,7 +21,7 @@ export default function Dashboard() {
             <p className="text-body-secondary" style={{ fontSize: 13 }}>{user?.email || user?.mobile}</p>
             <hr />
             <div className="d-grid gap-2">
-              <Link to="/matrimonial" className="nav-btn outline">{t("user_dashboard.browse_matrimonial")}</Link>
+              <a href="https://matrimonial.citywala.com/" target="_blank" rel="noopener noreferrer" className="nav-btn outline">{t("user_dashboard.browse_matrimonial")}</a>
               <Link to="/plan" className="nav-btn outline">{t("user_dashboard.view_plans")}</Link>
               <button onClick={logout} className="nav-btn ghost-danger">{t("user_dashboard.logout")}</button>
             </div>
@@ -47,10 +47,10 @@ export default function Dashboard() {
             <h2 className="h5 fw-bold mb-3">{t("user_dashboard.quick_links")}</h2>
             <div className="row g-3">
               <div className="col-6 col-md-3">
-                <Link to="/matrimonial" className="cw-quick-link">
+                <a href="https://matrimonial.citywala.com/" target="_blank" rel="noopener noreferrer" className="cw-quick-link">
                   <i className="fa-solid fa-heart" style={{ color: 'var(--cw-blue-600)' }} aria-hidden="true"></i>
                   {t("user_dashboard.matrimonial")}
-                </Link>
+                </a>
               </div>
               <div className="col-6 col-md-3">
                 <Link to="/categories" className="cw-quick-link">

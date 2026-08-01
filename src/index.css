@@ -1590,6 +1590,7 @@ textarea:focus-visible,
 
 .cw-dashboard-content {
   flex: 1;
+  min-width: 0;
   background: var(--cw-bg);
   min-height: 100vh;
   padding: var(--cw-s5) var(--cw-s5) var(--cw-s5) var(--cw-s3);
@@ -1597,7 +1598,7 @@ textarea:focus-visible,
 
 @media (min-width: 992px) {
   .cw-dashboard-content {
-    margin-left: 10px;
+    margin-left: 260px;
   }
 }
 
