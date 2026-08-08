@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import API from "../api/axios";
 import { FiFileText, FiCalendar } from "react-icons/fi";
 import Seo from "../seo/Seo";
-import Breadcrumbs from "../components/Breadcrumbs";
 import { webPageSchema, graph } from "../seo/schema";
 import HeroBanner from "../components/ui/HeroBanner";
 
@@ -522,7 +521,6 @@ Email: citywala1959@gmail.com</p>
       />
 
       <HeroBanner
-        breadcrumbs={<Breadcrumbs items={[{ name: "Terms & Conditions" }]} onDark />}
         eyebrow="Legal Information"
         title={title || "Terms & Conditions"}
         subtitle="Please read these terms carefully before using CityWala"

@@ -197,7 +197,7 @@ export default function PartnerDetails() {
             </div>
 
             {/* Profile Hero Header Card */}
-            <div className="cw-card p-0 overflow-hidden mb-4">
+            <div className="cw-card dc-profile-card p-0 overflow-hidden mb-4">
                 <div className="cw-profile-cover" aria-hidden="true"></div>
 
                 <div className="px-4 pb-4 pt-0 position-relative">
@@ -242,14 +242,15 @@ export default function PartnerDetails() {
                         <div className="cw-profile-actions d-flex gap-2 w-100 w-md-auto mt-3 mt-md-0 justify-content-center">
                             <a
                                 href={`tel:${partner.mobile}`}
-                                className="nav-btn primary flex-grow-1 flex-md-grow-0"
+                                className="dc-btn dc-btn--accent flex-grow-1 flex-md-grow-0"
                                 onClick={requireAuthToContact}
                             >
                                 <i className="fa-solid fa-phone" aria-hidden="true"></i>{t("call_partner")}
                             </a>
                             <a
                                 href={`mailto:${partner.email}`}
-                                className="nav-btn outline flex-grow-1 flex-md-grow-0"
+                                className="dc-btn dc-btn--soft flex-grow-1 flex-md-grow-0"
+                                style={{ padding: '14px 22px', fontSize: 14 }}
                                 onClick={requireAuthToContact}
                             >
                                 <i className="fa-solid fa-envelope" aria-hidden="true"></i>{t("email")}

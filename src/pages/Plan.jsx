@@ -110,9 +110,6 @@ export default function Plan() {
     <div>
       <section className="cw-page-header">
         <div className="container">
-          <span className="cw-overline d-block mb-2" style={{ color: "rgba(255,255,255,.85)" }}>
-            {t('home.trusted_label')}
-          </span>
           <h1 className="cw-display cw-display--section text-white mb-0">
             {t('plans.choose_plan', { defaultValue: 'Choose your plan' })}
           </h1>

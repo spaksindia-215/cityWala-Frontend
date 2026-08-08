@@ -89,3 +89,72 @@
 .admin-root .sidebar-subitem:hover {
     background: rgba(255, 255, 255, 0.1);
 }
+
+/* Confirmation modal (admin/faq/DeleteFAQModal and any future admin dialog).
+   Scoped like the rest of this file; uses the shared --cw-* tokens. */
+.admin-root .cw-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1055;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--cw-s4);
+    background: rgba(7, 22, 51, .5);
+}
+
+.admin-root .cw-modal {
+    width: 100%;
+    max-width: 460px;
+    background: var(--cw-surface);
+    border-radius: var(--cw-r-lg);
+    box-shadow: var(--cw-shadow-lg);
+    padding: var(--cw-s5);
+}
+
+.admin-root .cw-modal__title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--cw-ink-900);
+    margin-bottom: var(--cw-s3);
+}
+
+.admin-root .cw-modal__text {
+    color: var(--cw-gray-700);
+    font-size: 14px;
+    margin-bottom: var(--cw-s3);
+}
+
+/* The question being deleted — quoted back so the admin can confirm they
+   picked the right row. Clamped so a long question can't grow the dialog. */
+.admin-root .cw-modal__subject {
+    background: var(--cw-gray-100);
+    border-radius: var(--cw-r-md);
+    padding: var(--cw-s3);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--cw-ink-900);
+    margin-bottom: var(--cw-s4);
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.admin-root .cw-modal__error {
+    background: var(--cw-danger-50);
+    color: var(--cw-danger);
+    border-radius: var(--cw-r-md);
+    padding: var(--cw-s3);
+    font-size: 13px;
+    margin-bottom: var(--cw-s4);
+}
+
+.admin-root .cw-modal__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--cw-s2);
+    flex-wrap: wrap;
+}

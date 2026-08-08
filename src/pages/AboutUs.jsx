@@ -1,5 +1,4 @@
 import Seo from "../seo/Seo";
-import Breadcrumbs from "../components/Breadcrumbs";
 import { webPageSchema, graph } from "../seo/schema";
 import HeroBanner from "../components/ui/HeroBanner";
 import CTABanner from "../components/ui/CTABanner";
@@ -48,7 +47,6 @@ const AboutUs = () => {
       />
 
       <HeroBanner
-        breadcrumbs={<Breadcrumbs items={[{ name: "About Us" }]} onDark />}
         eyebrow="About CityWala"
         title="Discover Local Services Without The Chaos"
         subtitle="CityWala is built to simplify how people discover nearby businesses, trusted services, local opportunities, and daily essentials."
