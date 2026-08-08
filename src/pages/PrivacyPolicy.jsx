@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import API from "../api/axios";
 import { FiFileText, FiCalendar } from "react-icons/fi";
 import Seo from "../seo/Seo";
-import Breadcrumbs from "../components/Breadcrumbs";
 import { webPageSchema, graph } from "../seo/schema";
 import HeroBanner from "../components/ui/HeroBanner";
 
@@ -311,7 +310,6 @@ const PrivacyPolicy = () => {
       />
 
       <HeroBanner
-        breadcrumbs={<Breadcrumbs items={[{ name: "Privacy Policy" }]} onDark />}
         eyebrow="Privacy & Data Protection"
         title={title}
         subtitle="We are committed to protecting your privacy and ensuring transparency about how we handle your data"

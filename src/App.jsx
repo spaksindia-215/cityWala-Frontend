@@ -36,6 +36,8 @@ import Analytics from './pages/admin/Analytics'
 import AdminAllBlogs from './pages/admin/blog/AdminAllBlogs'
 import AdminBlogForm from './pages/admin/blog/AdminBlogForm'
 import AdminBlogCategories from './pages/admin/blog/AdminBlogCategories'
+import AdminAllFaqs from './pages/admin/faq/AdminAllFaqs'
+import AdminFaqForm from './pages/admin/faq/AdminFaqForm'
 import Blogs from './pages/Blogs'
 import BlogDetail from './pages/BlogDetail'
 
@@ -241,6 +243,9 @@ const AdminRoot = () => (
           <Route path="/admin/blogs/add" element={<NoIndex><ProtectedAdmin><AdminBlogForm /></ProtectedAdmin></NoIndex>} />
           <Route path="/admin/blogs/edit/:id" element={<NoIndex><ProtectedAdmin><AdminBlogForm /></ProtectedAdmin></NoIndex>} />
           <Route path="/admin/blogs/categories" element={<NoIndex><ProtectedAdmin><AdminBlogCategories /></ProtectedAdmin></NoIndex>} />
+          <Route path="/admin/faqs" element={<NoIndex><ProtectedAdmin><AdminAllFaqs /></ProtectedAdmin></NoIndex>} />
+          <Route path="/admin/faqs/add" element={<NoIndex><ProtectedAdmin><AdminFaqForm /></ProtectedAdmin></NoIndex>} />
+          <Route path="/admin/faqs/edit/:id" element={<NoIndex><ProtectedAdmin><AdminFaqForm /></ProtectedAdmin></NoIndex>} />
         </Route>
 
       </Routes>

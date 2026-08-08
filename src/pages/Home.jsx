@@ -6,10 +6,17 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useTranslation } from "react-i18next";
-import Logo from '../assets/headerLogo.png'
 import AvatarPlaceholder from '../assets/avatar-placeholder.svg'
 import ServicePlaceholder from '../assets/service-placeholder.svg'
+import CategoryPlaceholder from '../assets/category-placeholder.svg'
+import SvcAc from '../assets/services/ac-repair.svg'
+import SvcCar from '../assets/services/car-repair.svg'
+import SvcBike from '../assets/services/bike-repair.svg'
+import SvcLabour from '../assets/services/labour.svg'
+import SvcGrocery from '../assets/services/grocery.svg'
+import SvcElectricians from '../assets/services/electricians.svg'
 import Seo from '../seo/Seo'
+import FAQSection from '../components/faq/FAQSection'
 import { webPageSchema, graph } from '../seo/schema'
 import { DEFAULT_TITLE, DEFAULT_DESCRIPTION } from '../seo/config'
 
@@ -265,20 +272,19 @@ export default function Home() {
         jsonLd={graph(webPageSchema({ path: "/", name: DEFAULT_TITLE, description: DEFAULT_DESCRIPTION }))}
       />
 
-      <section id="hero-section" className="cw-hero-photo">
-        <div className="cw-hero-photo__bg" aria-hidden="true" />
-        <div className="cw-hero-photo__wash" aria-hidden="true" />
+      <section id="hero-section" className="dc-hero">
+        <div className="dc-hero__glow" aria-hidden="true" />
+        <div className="dc-hero__glow--alt" aria-hidden="true" />
 
-        <div className="cw-hero-photo__content container">
+        <div className="dc-hero__inner">
           <div className="row">
             <div className="col-xl-8 col-lg-9">
 
-              <span className="d-inline-block px-3 py-2 mb-3 rounded-pill cw-overline"
-                style={{ background: 'var(--cw-blue-50)', color: 'var(--cw-blue-600)', letterSpacing: '.06em' }}>
+              <span className="dc-hero__badge">
                 {t('home.trusted_label')}
               </span>
 
-              <h1 className="cw-display cw-display--hero mb-3">
+              <h1 className="dc-hero__title">
                 {t('home.hero_title')}<br />
                 {(() => {
                   const title2 = t('home.hero_title2');
@@ -293,16 +299,16 @@ export default function Home() {
                 })()}
               </h1>
 
-              <p className="mb-5" style={{ maxWidth: 560, fontSize: 16, lineHeight: 1.6, color: 'var(--cw-gray-700)' }}>
+              <p className="dc-hero__lede">
                 {t('home.hero_subtitle')}
               </p>
             </div>
           </div>
+        </div>
 
-          {/* Search Card */}
-          <div className="row">
-            <div className="col-xl-11">
-              <div className="cw-hero-search-card">
+        {/* Search Card — straddles the hero's lower edge */}
+        <div className="dc-searchcard">
+          <div className="w-100">
                 <form onSubmit={handleSearch}>
                   <div className="row g-3 align-items-end">
 
@@ -370,7 +376,7 @@ export default function Home() {
                     </div>
 
                     <div className="col-lg-1 col-md-12">
-                      <button type="submit" className="nav-btn primary w-100" style={{ height: 48 }}>
+                      <button type="submit" className="dc-btn dc-btn--accent w-100" style={{ height: 48, padding: '14px 18px' }}>
                         <i className="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
                         <span className="d-lg-none">{t('search')}</span>
                       </button>
@@ -378,95 +384,90 @@ export default function Home() {
 
                   </div>
                 </form>
-              </div>
-            </div>
           </div>
         </div>
+        <div className="dc-hero__spacer" />
       </section>
 
       {/* ===== STATS BAND ===== */}
-      <section className="cw-stats-band">
-        <div className="container">
-          <div className="row g-4 text-center text-md-start">
-            {[
-              { icon: 'fa-store', tint: 'blue', number: '10K+', text: t('home.businesses') },
-              { icon: 'fa-user-group', tint: 'orange', number: '50+', text: t('home.cities') },
-              { icon: 'fa-shield-halved', tint: 'success', number: '24/7', text: t('home.support') },
-              { icon: 'fa-shield', tint: 'violet', number: '100%', text: t('home.verified') },
-            ].map((item, index) => (
-              <div className="col-6 col-md-3" key={index}>
-                <div className="cw-stat-tile">
-                  <span className={`cw-stat-tile__icon cw-stat-tile__icon--${item.tint}`}>
-                    <i className={`fa-solid ${item.icon}`} aria-hidden="true"></i>
-                  </span>
-                  <div>
-                    <div className="cw-stat-tile__value">{item.number}</div>
-                    <div className="cw-stat-tile__label">{item.text}</div>
-                  </div>
-                </div>
+      <section className="dc-wrap" style={{ padding: '72px 56px 80px' }}>
+        <div className="dc-stats">
+          {[
+            { icon: 'fa-store', color: 'var(--cw-blue-600)', tint: 'rgba(37,99,235,.1)', number: '10,000+', text: t('home.businesses') },
+            { icon: 'fa-location-dot', color: 'var(--cw-orange-500)', tint: 'rgba(242,97,28,.1)', number: '50+', text: t('home.cities') },
+            { icon: 'fa-shield-halved', color: 'var(--cw-green-500)', tint: 'rgba(37,197,94,.1)', number: '100%', text: t('home.verified') },
+            { icon: 'fa-clock', color: 'var(--cw-violet-500)', tint: 'rgba(139,92,246,.1)', number: '24/7', text: t('home.support') },
+          ].map((item, index) => (
+            <div className="dc-stat" key={index}>
+              <span className="dc-stat__icon" style={{ background: item.tint, color: item.color }}>
+                <i className={`fa-solid ${item.icon}`} aria-hidden="true"></i>
+              </span>
+              <div>
+                <div className="dc-stat__value">{item.number}</div>
+                <div className="dc-stat__label">{item.text}</div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       </section>
 
-      <section className="cw-section category-section">
-        <div className="container">
+      <section className="dc-section dc-section--muted category-section">
+        <div className="dc-wrap">
 
           {/* Section header */}
-          <div className="d-flex flex-wrap justify-content-between align-items-center mb-5 gap-3">
-            <div>
-              <span className="cw-overline d-block mb-2">
-                {t('home.explore')}
-              </span>
-              <h2 className="cw-display cw-display--section mb-2">{t('home.popular_categories')}</h2>
-              <p className="section-subtitle mb-0">
-                {t('home.popular_subtitle')}
-              </p>
-            </div>
-          </div>
+          <div className="dc-eyebrow">{t('home.explore')}</div>
+          <h2 className="dc-h2">{t('home.popular_categories')}</h2>
+          <p className="dc-sub">{t('home.popular_subtitle')}</p>
 
           {/* Categories */}
-          <div className="row g-4">
-            {(rootCategories.length > 0 ? rootCategories : translatedFallbackCats).map(cat => (
-              <div
-                key={cat._id || cat.id || cat.name}
-                className="col-xl-2 col-lg-3 col-md-4 col-6"
-              >
+          <div className="dc-cat-grid">
+            {(rootCategories.length > 0 ? rootCategories : translatedFallbackCats).map((cat, i) => {
+              const TINTS = [
+                { bg: 'rgba(242,97,28,.1)', fg: 'var(--cw-orange-500)' },
+                { bg: 'rgba(37,99,235,.1)', fg: 'var(--cw-blue-600)' },
+                { bg: 'rgba(26,155,82,.1)', fg: 'var(--cw-green-500)' },
+                { bg: 'rgba(139,92,246,.1)', fg: 'var(--cw-violet-500)' },
+                { bg: 'rgba(236,72,153,.1)', fg: 'var(--cw-pink-500)' },
+                { bg: 'rgba(20,58,122,.1)', fg: 'var(--cw-blue-800)' },
+                { bg: 'rgba(245,158,11,.12)', fg: 'var(--cw-warning)' },
+                { bg: 'rgba(8,145,178,.1)', fg: 'var(--cw-teal-500)' },
+              ];
+              const tint = TINTS[i % TINTS.length];
+              return (
                 <button
+                  key={cat._id || cat.id || cat.name}
                   type="button"
                   onClick={() => handleCategory(cat)}
-                  className="category-card-v2 text-decoration-none w-100 border-0 cw-lift"
+                  className="dc-cat border-0 text-start"
                 >
-                  <div className="icon-box">
+                  <span className="dc-cat__icon" style={{ background: tint.bg, color: tint.fg }}>
                     <img
-                      src={cat.img || cat.image || cat.svg_path || Logo}
+                      src={cat.img || cat.image || cat.svg_path || CategoryPlaceholder}
                       alt=""
                       aria-hidden="true"
                       onError={(e) => {
                         e.target.onerror = null;
-                        e.target.src = Logo;
+                        e.target.src = CategoryPlaceholder;
                       }}
                     />
-                  </div>
-
-                  <h6 className='text-truncate'>{cat.name}</h6>
-                  <span className='text-truncate'>{t('home.explore_now')}</span>
+                  </span>
+                  <span className="dc-cat__label text-truncate">{cat.name}</span>
                 </button>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
         </div>
       </section>
 
 
-      <section className="cw-section fast-expert-section" style={{ paddingTop: 'var(--cw-s6)', paddingBottom: 'var(--cw-s6)' }}>
-        <div className="container">
+      <section className="dc-section fast-expert-section">
+        <div className="dc-wrap">
           <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
             <div>
-              <h2 className="cw-display cw-display--section mb-1" style={{ fontSize: 'clamp(1.25rem,2.5vw,1.75rem)' }}>{t('home.find_experts')}</h2>
-              <p className="section-subtitle mb-0">{t('home.browse_cats')}</p>
+              <div className="dc-eyebrow">{t('home.near_you', { defaultValue: 'NEAR YOU' })}</div>
+              <h2 className="dc-h2" style={{ fontSize: 28, marginBottom: 0 }}>{t('home.find_experts')}</h2>
+              <p className="dc-sub" style={{ marginBottom: 0 }}>{t('home.browse_cats')}</p>
             </div>
 
             <div className="d-flex gap-2">
@@ -493,10 +494,10 @@ export default function Home() {
                   onClick={() => handleCategory(cat)}
                 >
                   <img
-                    src={cat.img || cat.image || cat.svg_path || Logo}
+                    src={cat.img || cat.image || cat.svg_path || CategoryPlaceholder}
                     alt=""
                     aria-hidden="true"
-                    onError={(e) => { e.target.onerror = null; e.target.src = Logo; }}
+                    onError={(e) => { e.target.onerror = null; e.target.src = CategoryPlaceholder; }}
                   />
                   <p>{cat.name}</p>
                 </button>
@@ -530,14 +531,14 @@ export default function Home() {
 
                 <div className="row g-3">
                   {[
-                    { id: 'ac', name: t('home.svc_ac'), url: '/categories/furniture-business-and-services' },
-                    { id: 'car', name: t('home.svc_car'), url: '/categories/furniture-business-and-services' },
-                    { id: 'bike', name: t('home.svc_bike'), url: '/categories/furniture-business-and-services' },
+                    { id: 'ac', name: t('home.svc_ac'), url: '/categories/furniture-business-and-services', img: SvcAc },
+                    { id: 'car', name: t('home.svc_car'), url: '/categories/furniture-business-and-services', img: SvcCar },
+                    { id: 'bike', name: t('home.svc_bike'), url: '/categories/furniture-business-and-services', img: SvcBike },
                   ].map((item) => (
                     <div key={item.id} className="col-6 col-sm-4">
                       <Link to={item.url} className="service-box">
                         <img
-                          src={ServicePlaceholder}
+                          src={item.img || ServicePlaceholder}
                           alt=""
                           aria-hidden="true"
                           className="img-fluid"
@@ -572,14 +573,14 @@ export default function Home() {
 
                 <div className="row g-3">
                   {[
-                    { id: 'labour', name: t('home.svc_labour'), url: '/categories/daily-necessity' },
-                    { id: 'grocery', name: t('home.svc_grocery'), url: '/categories/daily-necessity/local-shops' },
-                    { id: 'electricians', name: t('home.svc_electricians'), url: '/categories/daily-necessity/electrician' },
+                    { id: 'labour', name: t('home.svc_labour'), url: '/categories/daily-necessity', img: SvcLabour },
+                    { id: 'grocery', name: t('home.svc_grocery'), url: '/categories/daily-necessity/local-shops', img: SvcGrocery },
+                    { id: 'electricians', name: t('home.svc_electricians'), url: '/categories/daily-necessity/electrician', img: SvcElectricians },
                   ].map((item) => (
                     <div key={item.id} className="col-6 col-sm-4">
                       <Link to={item.url} className="service-box">
                         <img
-                          src={ServicePlaceholder}
+                          src={item.img || ServicePlaceholder}
                           alt=""
                           aria-hidden="true"
                           className="img-fluid"
@@ -600,10 +601,34 @@ export default function Home() {
       </section>
 
       {/* ===== TESTIMONIALS ===== */}
-      <section className="cw-section" style={{ background: 'var(--cw-gradient-soft)', paddingTop: 'var(--cw-s6)', paddingBottom: 'var(--cw-s6)' }}>
-        <div className="container">
+      {/* ===== HOW IT WORKS ===== */}
+      <section className="dc-section dc-section--navy">
+        <div className="dc-wrap">
+          <div className="text-center" style={{ marginBottom: 48 }}>
+            <div className="dc-eyebrow dc-eyebrow--onNavy">{t('home.how_it_works_eyebrow', { defaultValue: 'HOW BOOKING WORKS' })}</div>
+            <h2 className="dc-h2 dc-h2--onNavy">{t('home.how_it_works_title', { defaultValue: 'From search to service, in four steps' })}</h2>
+          </div>
+          <div className="dc-steps">
+            {[
+              { t: t('home.step1_title', { defaultValue: 'Search your need' }), d: t('home.step1_text', { defaultValue: 'Tell us the service or product and where you are.' }) },
+              { t: t('home.step2_title', { defaultValue: 'Compare verified pros' }), d: t('home.step2_text', { defaultValue: 'See ratings, prices and distance before you choose.' }) },
+              { t: t('home.step3_title', { defaultValue: 'Book or send an enquiry' }), d: t('home.step3_text', { defaultValue: 'Pick a slot and confirm instantly, or ask a quick question first.' }) },
+              { t: t('home.step4_title', { defaultValue: 'Get it done & rate' }), d: t('home.step4_text', { defaultValue: 'Track your booking, then rate the provider for others.' }) },
+            ].map((s, i) => (
+              <div className="dc-step" key={i}>
+                <div className="dc-step__num">{i + 1}</div>
+                <div className="dc-step__title">{s.t}</div>
+                <div className="dc-step__text">{s.d}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-          <h2 className="cw-display cw-display--section text-center mb-5">
+      <section className="dc-section dc-section--muted">
+        <div className="dc-wrap">
+
+          <h2 className="dc-h2 text-center" style={{ marginBottom: 40 }}>
             {t('home.testimonials')}
           </h2>
 
@@ -611,19 +636,19 @@ export default function Home() {
             {TESTIMONIALS.map((item, i) => (
               <div key={i} className="px-2">
 
-                <div className="testimonial-card">
+                <div className="dc-quote">
 
                   <i
-                    className="fa-solid fa-quote-left mb-3"
-                    style={{ color: 'var(--cw-orange-500)', fontSize: 20 }}
+                    className="fa-solid fa-quote-left"
+                    style={{ color: 'var(--cw-orange-500)', fontSize: 20, marginBottom: 10 }}
                     aria-hidden="true"
                   ></i>
 
-                  <p className="testimonial-text">
+                  <p className="dc-quote__text">
                     {item.text}
                   </p>
 
-                  <div className="d-flex align-items-center gap-3 mt-3">
+                  <div className="d-flex align-items-center gap-3">
 
                     <img
                       src={item.img || AvatarPlaceholder}
@@ -634,9 +659,9 @@ export default function Home() {
                     />
 
                     <div>
-                      <h6 className="mb-0 fw-bold">
+                      <div className="dc-quote__who">
                         {item.name}
-                      </h6>
+                      </div>
 
                       <div style={{ color: 'var(--cw-amber-400)', fontSize: 13 }} aria-label="5 out of 5 stars">
                         ★★★★★
@@ -654,44 +679,52 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ===== FAQ ===== */}
+      {/* Admin-managed content: renders nothing until an admin publishes a
+          FAQ, so the homepage never shows an empty block or placeholder copy. */}
+      {/* Sits on white between the muted testimonials band and the CTA,
+          keeping the page's alternating section rhythm. */}
+      <section className="dc-section">
+        <div className="dc-wrap">
+          <FAQSection
+            eyebrow={t('home.faq_eyebrow', { defaultValue: 'FAQ' })}
+            title={t('home.faq_title', { defaultValue: 'Frequently Asked Questions' })}
+            subtitle={t('home.faq_subtitle', { defaultValue: 'Everything you need to know about finding and listing businesses on CityWala.' })}
+            hideWhenEmpty
+          />
+        </div>
+      </section>
+
       {/* ===== CTA ===== */}
-      <section className="cw-section cw-cta-banner" style={{ paddingTop: 'var(--cw-s6)', paddingBottom: 'var(--cw-s6)' }}>
-        <div className="container">
-          <div className="row justify-content-center">
-            <div className="col-12 col-lg-9 text-center position-relative">
+      <section className="dc-cta">
+        <h2 className="dc-cta__title">
+          {t('home.cta_title')}
+        </h2>
 
-              <h2 className="cw-display cw-display--cta text-white mb-3">
-                {t('home.cta_title')}
-              </h2>
+        <p className="dc-cta__text">
+          {t('home.cta_subtitle')}
+        </p>
 
-              <p className="text-white mb-4" style={{ opacity: .85, fontSize: 16 }}>
-                {t('home.cta_subtitle')}
-              </p>
+        <div className="dc-cta__actions">
 
-              <div className="d-flex flex-column flex-sm-row gap-3 justify-content-center align-items-center">
+          <Link
+            to="/register-business"
+            className="dc-btn dc-btn--white"
+          >
+            <i className="fa-solid fa-handshake" aria-hidden="true"></i>
+            {t('home.register_partner')}
+          </Link>
 
-                <Link
-                  to="/register-business"
-                  className="nav-btn cw-btn-on-dark cta-btn w-100 w-sm-auto"
-                >
-                  <i className="fa-solid fa-handshake" aria-hidden="true"></i>
-                  {t('home.register_partner')}
-                </Link>
+          <a
+            href="https://wa.me/919875677667"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="dc-btn dc-btn--ghost"
+          >
+            <i className="fa-solid fa-phone" aria-hidden="true"></i>
+            {t('home.contact_us')}
+          </a>
 
-                <a
-                  href="https://wa.me/919875677667"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="nav-btn cw-btn-outline-on-dark cta-btn w-100 w-sm-auto"
-                >
-                  <i className="fa-solid fa-phone" aria-hidden="true"></i>
-                  {t('home.contact_us')}
-                </a>
-
-              </div>
-
-            </div>
-          </div>
         </div>
       </section>
     </div>

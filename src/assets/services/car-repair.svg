@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180" width="320" height="180" role="img" aria-label="Car repair">
+  <defs>
+    <linearGradient id="bg-car-repair" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#eff4ff"/>
+      <stop offset="100%" stop-color="#fff3ec"/>
+    </linearGradient>
+  </defs>
+  <rect width="320" height="180" fill="url(#bg-car-repair)"/>
+  <path d="M74 106h172l-12-30a14 14 0 0 0-13-9h-122a14 14 0 0 0-13 9z" fill="#2563eb" opacity="0.22"/>
+  <path d="M74 106h172l-12-30a14 14 0 0 0-13-9h-122a14 14 0 0 0-13 9z" fill="none" stroke="#0c2042" stroke-width="3.5" stroke-linejoin="round" opacity="0.6"/>
+  <rect x="70" y="104" width="180" height="18" rx="8" fill="#0c2042" opacity="0.5"/>
+  <circle cx="108" cy="128" r="14" fill="#0c2042" opacity="0.75"/>
+  <circle cx="212" cy="128" r="14" fill="#0c2042" opacity="0.75"/>
+  <circle cx="108" cy="128" r="5" fill="#F2611C"/>
+  <circle cx="212" cy="128" r="5" fill="#F2611C"/>
+</svg>
