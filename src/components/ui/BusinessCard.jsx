@@ -54,8 +54,7 @@ export default function BusinessCard({ partner, onOpen }) {
         <div className="d-flex align-items-center gap-2 mt-2">
           <button
             type="button"
-            className="nav-btn outline"
-            style={{ height: 32, fontSize: 12 }}
+            className="dc-btn dc-btn--navy"
             onClick={(e) => { e.stopPropagation(); onOpen(partner._id); }}
           >
             {t("all_categories.view_details")}

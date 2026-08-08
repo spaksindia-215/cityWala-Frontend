@@ -8,7 +8,6 @@ import {
 import { useState } from "react";
 import API from "../api/axios";
 import Seo from "../seo/Seo";
-import Breadcrumbs from "../components/Breadcrumbs";
 import { webPageSchema, graph } from "../seo/schema";
 import HeroBanner from "../components/ui/HeroBanner";
 
@@ -75,7 +74,6 @@ const ContactUs = () => {
       />
 
       <HeroBanner
-        breadcrumbs={<Breadcrumbs items={[{ name: "Contact Us" }]} onDark />}
         eyebrow="Contact CityWala"
         title="Get In Touch With Us"
         subtitle="Have questions, feedback, or business inquiries? Our team is ready to help you anytime."

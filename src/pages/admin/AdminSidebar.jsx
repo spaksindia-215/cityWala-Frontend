@@ -39,6 +39,14 @@ export default function AdminSidebar() {
                 { to: "/admin/blogs/categories", label: "Blog Categories" },
             ],
         },
+        {
+            icon: "fa-circle-question",
+            label: "FAQs",
+            children: [
+                { to: "/admin/faqs", label: "All FAQs" },
+                { to: "/admin/faqs/add", label: "Add FAQ" },
+            ],
+        },
         { to: "/admin/term-and-condition", icon: "fa-table-cells-large", label: "Term and Condition" },
     ];
 

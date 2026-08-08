@@ -129,21 +129,21 @@ export function Login() {
         </div>
 
         <div className="text-end mb-3">
-          <Link to="/forgot-password" style={{ fontSize: 13 }}>{t('login.forgot_password')}</Link>
+          <Link to="/forgot-password" className="dc-authlink" style={{ fontSize: 13 }}>{t('login.forgot_password')}</Link>
         </div>
-        <button className="nav-btn primary w-100" style={{ height: 48 }} type="submit" disabled={loading}>
+        <button className="dc-btn dc-btn--primary dc-btn--block" type="submit" disabled={loading}>
           {loading ? t('login.logging_in') : t('login.login_btn')}
         </button>
       </form>
 
       <hr className="my-4" />
 
-      <div className="text-center" style={{ fontSize: 14 }}>
-        {t('login.new_here')} <Link to="/register">{t('login.create_account')}</Link>
+      <div className="text-center" style={{ fontSize: 13.5 }}>
+        {t('login.new_here')} <Link to="/register" className="dc-authlink">{t('login.create_account')}</Link>
       </div>
-      <div className="text-center mt-3" style={{ fontSize: 13 }}>
+      <div className="text-center mt-2" style={{ fontSize: 13.5 }}>
         <span className="text-body-secondary">{t('login.are_you_partner')} </span>
-        <Link to="/partner/login" className="fw-semibold">{t('login.partner_login')}</Link>
+        <Link to="/partner/login" className="dc-authlink">{t('login.partner_login')}</Link>
       </div>
     </AuthCard>
   );
@@ -271,19 +271,19 @@ export function Register() {
           {errors.password_confirmation && <div className="invalid-feedback d-block">{errors.password_confirmation}</div>}
         </div>
 
-        <button className="nav-btn primary w-100" style={{ height: 48 }} type="submit" disabled={loading}>
+        <button className="dc-btn dc-btn--accent dc-btn--block" type="submit" disabled={loading}>
           {loading ? t('register.registering') : t('register.register_btn')}
         </button>
       </form>
 
       <hr className="my-3" />
 
-      <div className="text-center" style={{ fontSize: 14 }}>
-        {t('register.have_account')} <Link to="/login">{t('register.login')}</Link>
+      <div className="text-center" style={{ fontSize: 13.5 }}>
+        {t('register.have_account')} <Link to="/login" className="dc-authlink">{t('register.login')}</Link>
       </div>
-      <div className="text-center mt-3" style={{ fontSize: 13 }}>
+      <div className="text-center mt-2" style={{ fontSize: 13.5 }}>
         <span className="text-body-secondary">{t('register.want_business')} </span>
-        <Link to="/register-business" className="fw-semibold">{t('register.register_partner')}</Link>
+        <Link to="/register-business" className="dc-authlink">{t('register.register_partner')}</Link>
       </div>
     </AuthCard>
   );

@@ -30,7 +30,7 @@ export default function DefaultSeo() {
       <meta name="application-name" content={SITE_NAME} />
       <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
       <meta name="google-site-verification" content={GSC_VERIFICATION} />
-      <meta name="theme-color" content="#1075be" />
+      <meta name="theme-color" content="#2563eb" />
       <link rel="canonical" href={`${SITE_URL}/`} />
 
       <meta property="og:type" content="website" />

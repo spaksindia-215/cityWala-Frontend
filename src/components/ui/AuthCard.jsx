@@ -14,15 +14,16 @@ export default function AuthCard({
   children,
 }) {
   return (
+    <div className="cw-auth-page">
     <div className={`cw-auth-shell${variant === "admin" ? " cw-auth-shell--admin" : ""}`}>
       <div className="cw-auth-shell__panel">
-        {eyebrow && <span className="cw-overline d-block mb-3" style={{ color: "rgba(255,255,255,.85)" }}>{eyebrow}</span>}
-        {title && <h1 className="cw-display cw-display--section text-white mb-3">{title}</h1>}
-        {subtitle && <p className="mb-4" style={{ color: "rgba(255,255,255,.85)", fontSize: 15, lineHeight: 1.7 }}>{subtitle}</p>}
+        {eyebrow && <span className="dc-hero__badge">{eyebrow}</span>}
+        {title && <h1 className="dc-auth__title">{title}</h1>}
+        {subtitle && <p className="dc-auth__text">{subtitle}</p>}
         {bullets.length > 0 && (
-          <ul className="list-unstyled d-none d-lg-block">
+          <ul className="list-unstyled d-none d-lg-flex flex-column gap-3 mb-0">
             {bullets.map((b, i) => (
-              <li key={i} className="d-flex align-items-center gap-2 mb-2" style={{ color: "rgba(255,255,255,.85)", fontSize: 14 }}>
+              <li key={i} className="dc-auth__perk">
                 <i className="fa-solid fa-circle-check" aria-hidden="true"></i>
                 {b}
               </li>
@@ -36,6 +37,7 @@ export default function AuthCard({
           {children}
         </div>
       </div>
+    </div>
     </div>
   );
 }

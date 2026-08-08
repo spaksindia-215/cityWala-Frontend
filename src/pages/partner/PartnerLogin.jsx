@@ -814,7 +814,7 @@ export function PartnerRegister() {
             </div>
             <div className="text-center mt-3" style={{ fontSize: 13 }}>
               <span className="text-muted">Looking for customer login? </span>
-              <Link to="/login" style={{ color: '#1075be', fontWeight: '500' }}>Customer Login</Link>
+              <Link to="/login" style={{ color: 'var(--cw-orange-500)', fontWeight: '700' }}>Customer Login</Link>
             </div>
 
           </div>

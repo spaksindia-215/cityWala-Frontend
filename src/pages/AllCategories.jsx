@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import API from '../api/axios';
 import { getYoutubeThumbnail, getYoutubeWatchUrl } from '../utils/youtube';
 import Seo from '../seo/Seo';
-import Breadcrumbs from '../components/Breadcrumbs';
 import EmptyState from '../components/ui/EmptyState';
 import SkeletonCard from '../components/ui/SkeletonCard';
 import BusinessCard from '../components/ui/BusinessCard';
@@ -185,18 +184,6 @@ const AllCategories = () => {
       ? `Browse verified ${displayName} businesses, service providers, and partners listed on CityWala.`
       : "Browse all business categories on CityWala — from real estate and education to health, food, and more.");
 
-  // Breadcrumb trail follows the level1/level2/level3 slugs actually in the URL.
-  const breadcrumbItems = [level1, level2, level3]
-    .filter(Boolean)
-    .map((slug, i, arr) => ({
-      name:
-        (slug === currentSlug && selectedCategoryName?.name) ||
-        CATEGORY_LABELS[slug] ||
-        humanizeSlug(slug),
-      path: i === arr.length - 1 ? undefined : `/categories/${arr.slice(0, i + 1).join("/")}`,
-    }));
-  if (!currentSlug) breadcrumbItems.push({ name: "All Categories" });
-
   return (
     <div>
       <Seo
@@ -212,12 +199,6 @@ const AllCategories = () => {
       {/* Slim gradient page header (4.4/4.5) */}
       <section className="cw-page-header">
         <div className="container">
-          <Breadcrumbs items={breadcrumbItems} onDark />
-
-          <span className="cw-overline d-block mb-2" style={{ color: "rgba(255,255,255,.85)" }}>
-            {t("all_categories.browse_collection")}
-          </span>
-
           <h1 className="cw-display cw-display--section text-white mb-0">{displayName}</h1>
 
           {(() => {
@@ -346,9 +327,10 @@ const AllCategories = () => {
             <div className="row g-3">
               {subCategories.map((sub) => {
                 const rawSubDesc = sub?.description || "";
-                const { truncated: subTruncated, isTruncated: subIsTruncated } = truncateWords(rawSubDesc, DESCRIPTION_WORD_LIMIT);
                 const isSubExpanded = expandedSubDescIds.has(sub._id);
-                const shownSubDesc = isSubExpanded ? rawSubDesc : subTruncated;
+                // Two clamped lines fit roughly 150 characters at this width;
+                // only offer the toggle when there is genuinely more to reveal.
+                const subIsTruncated = rawSubDesc.length > 150;
                 const subThumb = getYoutubeThumbnail(sub?.youtubeUrl);
 
                 const toggleSubDesc = (e) => {
@@ -373,7 +355,7 @@ const AllCategories = () => {
                           handleSubCategoryClick(sub);
                         }
                       }}
-                      className="cw-card cw-lift cw-subcategory-row p-0"
+                      className="cw-card cw-lift cw-subcategory-card p-0"
                     >
                       <div className="w-100">
                         <div className="cw-subcategory-row">
@@ -404,18 +386,20 @@ const AllCategories = () => {
                         </div>
 
                         {rawSubDesc && (
-                          <p className="cw-subcategory-row__desc px-4 pb-3 mb-0">
-                            {shownSubDesc}
+                          <div className="px-4 pb-3">
+                            <p className={`cw-subcategory-row__desc mb-0${isSubExpanded ? "" : " is-clamped"}`}>
+                              {rawSubDesc}
+                            </p>
                             {subIsTruncated && (
                               <button
                                 type="button"
-                                className="btn btn-link p-0 ms-1 align-baseline small"
+                                className="cw-subcategory-row__toggle"
                                 onClick={toggleSubDesc}
                               >
                                 {isSubExpanded ? t("all_categories.read_less") : t("all_categories.read_more")}
                               </button>
                             )}
-                          </p>
+                          </div>
                         )}
                       </div>
                     </div>
