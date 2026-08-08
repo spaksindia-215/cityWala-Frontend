@@ -61,6 +61,7 @@ import API from './api/axios'
 import DefaultSeo from './seo/DefaultSeo'
 import NotFound from './pages/NotFound'
 import NoIndex from './seo/NoIndex'
+import useMetaPixelPageView from './hooks/useMetaPixelPageView'
 
 
 // import Loader from './components/Loader'
@@ -68,6 +69,10 @@ import NoIndex from './seo/NoIndex'
 
 
 function AppContent() {
+
+  // Tracks a Meta Pixel PageView on each client-side route change.
+  // The Pixel itself is initialized once by the snippet in index.html.
+  useMetaPixelPageView();
 
   // const ProtectedUser = ({ children }) => {
 //   const { user } = useAuth()
