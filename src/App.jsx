@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, Outlet, useLocation, useParams } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import SessionTimeoutProvider from './context/SessionTimeoutProvider'
 import { ToastProvider } from './context/ToastContext'
@@ -69,6 +69,20 @@ import useMetaPixelPageView from './hooks/useMetaPixelPageView'
 // import Loader from './components/Loader'
 
 
+
+// Sends the browser to an external site. Used for category slugs that live on
+// their own subdomain; the Vercel redirect covers direct hits, this covers
+// in-app navigation which never reaches the server.
+function ExternalRedirect({ to }) {
+  const { level2, level3 } = useParams();
+  const path = [level2, level3].filter(Boolean).join('/');
+
+  useEffect(() => {
+    window.location.replace(path ? `${to}${path}` : to);
+  }, [to, path]);
+
+  return <Loader />;
+}
 
 function AppContent() {
 
@@ -193,6 +207,7 @@ const AdminRoot = () => (
 
           <Route path="/account/dashboard" element={<NoIndex><ProtectedUser><Dashboard /></ProtectedUser></NoIndex>} />
 
+          <Route path="/categories/matrimonial/:level2?/:level3?" element={<ExternalRedirect to="https://matrimonial.citywala.com/" />} />
           <Route path="/categories/:level1?/:level2?/:level3?" element={<AllCategories />} />
           <Route path="/register-business" element={<PartnerRegister />} />
           <Route path='/terms-and-conditions' element={ <TermConditions /> } />

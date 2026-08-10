@@ -1,4 +1,16 @@
 {
+  "redirects": [
+    {
+      "source": "/categories/matrimonial",
+      "destination": "https://matrimonial.citywala.com/",
+      "permanent": true
+    },
+    {
+      "source": "/categories/matrimonial/:path*",
+      "destination": "https://matrimonial.citywala.com/:path*",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/(.*)",
