@@ -4567,6 +4567,20 @@ body.cw-lightbox-open {
   gap: 14px;
 }
 
+/* Two-column variant for longer FAQ lists */
+.cw-faq__columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  /* row-gap column-gap: keep vertical rhythm 14px, increase horizontal spacing */
+  gap: 14px 32px;
+}
+
+.cw-faq__col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
 /* Same card recipe as .dc-quote — white, 18px radius, soft shadow — so FAQ
    rows sit naturally beside the testimonial/step cards. */
 .cw-faq-item {
@@ -4762,6 +4776,10 @@ body.cw-lightbox-open {
     padding: 0 18px 18px;
     font-size: 14px;
   }
+}
+
+@media (max-width: 768px) {
+  .cw-faq__columns { grid-template-columns: 1fr; }
 }
 
 /* Respect reduced-motion: keep the open/close state change, drop the motion. */

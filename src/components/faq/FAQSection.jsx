@@ -91,6 +91,11 @@ export default function FAQSection({
     [faqs]
   );
 
+  // Split FAQs roughly in half for a two-column layout when there are many
+  const splitAt = Math.ceil(faqs.length / 2);
+  const leftFaqs = faqs.slice(0, splitAt);
+  const rightFaqs = faqs.slice(splitAt);
+
   if (hideWhenEmpty && status === "ready" && faqs.length === 0) return null;
 
   return (
@@ -140,17 +145,46 @@ export default function FAQSection({
       )}
 
       {status === "ready" && faqs.length > 0 && (
-        <div className="cw-faq__list">
-          {faqs.map((faq) => (
-            <FAQItem
-              key={faq._id}
-              faq={faq}
-              isOpen={openId === faq._id}
-              onToggle={() => handleToggle(faq._id)}
-              headingLevel={Heading === "h2" ? "h3" : "h4"}
-            />
-          ))}
-        </div>
+        // If there are more than 5 items, render two columns split roughly
+        // in half; otherwise render a single-column list as before.
+        faqs.length > 5 ? (
+          <div className="cw-faq__columns">
+            <div className="cw-faq__col">
+              {leftFaqs.map((faq) => (
+                <FAQItem
+                  key={faq._id}
+                  faq={faq}
+                  isOpen={openId === faq._id}
+                  onToggle={() => handleToggle(faq._id)}
+                  headingLevel={Heading === "h2" ? "h3" : "h4"}
+                />
+              ))}
+            </div>
+            <div className="cw-faq__col">
+              {rightFaqs.map((faq) => (
+                <FAQItem
+                  key={faq._id}
+                  faq={faq}
+                  isOpen={openId === faq._id}
+                  onToggle={() => handleToggle(faq._id)}
+                  headingLevel={Heading === "h2" ? "h3" : "h4"}
+                />
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="cw-faq__list">
+            {faqs.map((faq) => (
+              <FAQItem
+                key={faq._id}
+                faq={faq}
+                isOpen={openId === faq._id}
+                onToggle={() => handleToggle(faq._id)}
+                headingLevel={Heading === "h2" ? "h3" : "h4"}
+              />
+            ))}
+          </div>
+        )
       )}
     </section>
   );
